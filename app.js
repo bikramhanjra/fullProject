@@ -10,5 +10,5 @@ connectMongoDb(mongoURL).then(()=>console.log("MongoDb Connected"));
 app.use(express.urlencoded({extended:true}));
 
 app.use("/", require("./routes"));
-
+//testing
 app.listen(PORT, ()=>console.log("Server Started"));
