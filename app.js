@@ -1,9 +1,9 @@
 const express = require("express");
 const app = express();
 
-const PORT = 3000;
+const PORT = 3000; 
 
-let mongoURL = "mongodb://localhost:27017/teacher_crud";
+let mongoURL = "mongodb://localhost:27017/school_management";
 const {connectMongoDb} = require("./Connection");
 connectMongoDb(mongoURL).then(()=>console.log("MongoDb Connected"));
 
