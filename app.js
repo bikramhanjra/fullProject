@@ -4,7 +4,7 @@ const app = express();
 const PORT = 3000; 
 
 let mongoURL = "mongodb://localhost:27017/school_management";
-const {connectMongoDb} = require("./Connection");
+const {connectMongoDb} = require("./connection");
 connectMongoDb(mongoURL).then(()=>console.log("MongoDb Connected"));
 
 app.use(express.urlencoded({extended:true}));

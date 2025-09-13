@@ -1,34 +1,52 @@
-const User = require("../models/Student");
+const Student = require("../models/Student");
 
 async function getStudent(req, res) {
   try {
-    const result = await User.find({});
+    const result = await Student.find({});
     return res.status(200).json({
       status: "Success",
       data: result,
     });
   } catch (err) {
-    return res.status(500).json({
+    return res.status(400).json({
       status: "Error",
       message: err.message,
     });
-  }
-}
+  };
+};
+
+async function getStudentById(req, res) {
+  try {
+    const studentId = req.params.id;
+    const result = await Student.findById(studentId);
+    return res.status(200).json({
+      status: "Success",
+      data: result,
+    });
+  } catch (err) {
+    return res.status(400).json({
+      status: "Error",
+      message: err.message,
+    });
+  };
+};
 
 async function addStudent(req, res) {
   try {
-    const body = req.body;
-    const result = await User.create({
-      name: body.name,
-      age: body.age,
-      email: body.email,
+    const input = req.body;
+    const result = await Student.create({
+      studentName: input.studentName,
+      studentDob: input.studentDob,
+      studentEmail: input.studentEmail,
+      studentPassword: input.studentPassword,
+      st_PaidFees: input.st_PaidFees,
     });
     return res.status(201).json({
       status: "Created",
       data: result,
     });
   } catch (err) {
-    return res.status(500).json({
+    return res.status(400).json({
       status: "Error",
       message: err.message,
     });
@@ -36,43 +54,49 @@ async function addStudent(req, res) {
 }
 
 async function updateStudent(req, res) {
-    try{
-        const studentId = req.params.id;
-        const body = req.body;
-        const result = await User.findByIdAndUpdate(studentId, {
-            name:body.name,
-            age:body.age,
-            email:body.email,
-        });
-        return res.status(200).json({
-            status:"Success",
-            data:result,
-        }, {new:true});
-    }catch(err){
-        return res.status(500).json({
-            status:"Error",
-            message:err.message,
-        });
-    };
-};
+  try {
+    const studentId = req.params.id;
+    const input = req.body;
+    const result = await Student.findByIdAndUpdate(studentId, {
+      studentName: input.studentName,
+      studentDob: input.studentDob,
+      studentEmail: input.studentEmail,
+      studentPassword: input.studentPassword,
+      st_PaidFees: input.st_PaidFees,
+    });
+    return res.status(200).json(
+      {
+        status: "Success",
+        data: result,
+      },
+      { new: true }
+    );
+  } catch (err) {
+    return res.status(400).json({
+      status: "Error",
+      message: err.message,
+    });
+  }
+}
 
 async function deleteStudent(req, res) {
   try {
     const studentId = req.params.id;
-    await User.findByIdAndDelete(studentId);
+    await Student.findByIdAndDelete(studentId);
     return res.status(200).json({
-        status:"Deleted",
+      status: "Deleted",
     });
   } catch (err) {
-    return res.status(500).json({
-        status:"Error",
-        message:err.message,
+    return res.status(400).json({
+      status: "Error",
+      message: err.message,
     });
-  };
-};
+  }
+}
 
 module.exports = {
   getStudent,
+  getStudentById,
   addStudent,
   updateStudent,
   deleteStudent,

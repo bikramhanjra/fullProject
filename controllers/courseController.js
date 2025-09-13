@@ -1,8 +1,8 @@
-const Teacher = require("../models/Teacher");
+const Course = require("../models/Course");
 
-async function getTeacher(req, res) {
+async function getCourse(req, res) {
   try {
-    const result = await Teacher.find({});
+    const result = await Course.find({});
     return res.status(200).json({
       status: "Success",
       data: result,
@@ -12,13 +12,13 @@ async function getTeacher(req, res) {
       status: "Error",
       message: err.message,
     });
-  };
-};
+  }
+}
 
-async function getTeacherById(req, res) {
+async function getCourseById(req, res) {
   try {
     const teacherId = req.params.id;
-    const result = await Teacher.findById(teacherId);
+    const result = await Course.findById(teacherId);
     return res.status(200).json({
       status: "Success",
       data: result,
@@ -28,18 +28,18 @@ async function getTeacherById(req, res) {
       status: "Error",
       message: err.message,
     });
-  };
-};
+  }
+}
 
-
-async function addTeacher(req, res) {
+async function addCourse(req, res) {
   try {
     const input = req.body;
-    const result = await Teacher.create({
-      teacherName: input.teacherName,
-      teacherDob: input.teacherDob,
-      teacherEmail: input.teacherEmail,
-      teacherSalary: input.teacherSalary,
+    const result = await Course.create({
+      courseName: input.courseName,
+      capacity: input.capacity,
+      courseFees: input.courseFees,
+      courseDuration: input.courseDuration,
+      courseStartDate: input.courseStartDate,
     });
     return res.status(201).json({
       status: "Created",
@@ -53,15 +53,16 @@ async function addTeacher(req, res) {
   }
 }
 
-async function updateTeacher(req, res) {
+async function updateCourse(req, res) {
   try {
     const teacherId = req.params.id;
     const input = req.body;
-    const result = await Teacher.findByIdAndUpdate(teacherId, {
-      teacherName: input.teacherName,
-      teacherDob: input.teacherDob,
-      teacherEmail: input.teacherEmail,
-      teacherSalary: input.teacherSalary,
+    const result = await Course.findByIdAndUpdate(teacherId, {
+      courseName: input.courseName,
+      capacity: input.capacity,
+      courseFees: input.courseFees,
+      courseDuration: input.courseDuration,
+      courseStartDate: input.courseStartDate,
     });
     return res.status(200).json(
       {
@@ -78,10 +79,10 @@ async function updateTeacher(req, res) {
   }
 }
 
-async function deleteTeacher(req, res) {
+async function deleteCourse(req, res) {
   try {
     const teacherId = req.params.id;
-    await Teacher.findByIdAndDelete(teacherId);
+    await Course.findByIdAndDelete(teacherId);
     return res.status(200).json({
       status: "Deleted",
     });
@@ -94,9 +95,9 @@ async function deleteTeacher(req, res) {
 }
 
 module.exports = {
-  getTeacher,
-  getTeacherById,
-  addTeacher,
-  updateTeacher,
-  deleteTeacher,
+  getCourse,
+  getCourseById,
+  addCourse,
+  updateCourse,
+  deleteCourse,
 };
