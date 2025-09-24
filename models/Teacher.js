@@ -1,16 +1,16 @@
 const mongoose = require("mongoose");
 
 const TeacherSchema = new mongoose.Schema({
-  teacherName: {
+  name: {
     type: String,
   },
-  teacherDob: {
+  dob: {
     type: String,
   },
-  teacherEmail: {
+  email: {
     type: String,
   },
-  teacherSalary: {
+  salary: {
     type: Number,
   },
 });

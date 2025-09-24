@@ -12,8 +12,8 @@ async function getTeacher(req, res) {
       status: "Error",
       message: err.message,
     });
-  };
-};
+  }
+}
 
 async function getTeacherById(req, res) {
   try {
@@ -28,24 +28,24 @@ async function getTeacherById(req, res) {
       status: "Error",
       message: err.message,
     });
-  };
-};
-
+  }
+}
 
 async function addTeacher(req, res) {
   try {
     const input = req.body;
     const result = await Teacher.create({
-      teacherName: input.teacherName,
-      teacherDob: input.teacherDob,
-      teacherEmail: input.teacherEmail,
-      teacherSalary: input.teacherSalary,
+      name: input.name,
+      dob: input.dob,
+      email: input.email,
+      salary: input.salary,
     });
     return res.status(201).json({
       status: "Created",
       data: result,
     });
   } catch (err) {
+    console.log(err)
     return res.status(400).json({
       status: "Error",
       message: err.message,
@@ -58,17 +58,16 @@ async function updateTeacher(req, res) {
     const teacherId = req.params.id;
     const input = req.body;
     const result = await Teacher.findByIdAndUpdate(teacherId, {
-      teacherName: input.teacherName,
-      teacherDob: input.teacherDob,
-      teacherEmail: input.teacherEmail,
-      teacherSalary: input.teacherSalary,
-    });
+      name: input.name,
+      dob: input.dob,
+      email: input.email,
+      salary: input.salary,
+    }, {new: true});
     return res.status(200).json(
       {
         status: "Success",
         data: result,
       },
-      { new: true }
     );
   } catch (err) {
     return res.status(400).json({

@@ -12,8 +12,8 @@ async function getStudent(req, res) {
       status: "Error",
       message: err.message,
     });
-  };
-};
+  }
+}
 
 async function getStudentById(req, res) {
   try {
@@ -28,26 +28,47 @@ async function getStudentById(req, res) {
       status: "Error",
       message: err.message,
     });
-  };
-};
+  }
+}
+
+function isValidate(input) {
+  if (!input.email) {
+    return { isValid: false, message: "email is required" };
+  }
+  if (!input.dob) {
+    return { isValid: false, message: "Dob is required" };
+  }
+
+  return { isValid: true, message: "Requirements are fullfilled" };
+}
 
 async function addStudent(req, res) {
   try {
     const input = req.body;
+    const validation = isValidate(input);
+
+    if (!validation.isValid) {
+      return res.status(400).json({
+        success: false,
+        message: validation.message,
+      });
+    }
+
     const result = await Student.create({
-      studentName: input.studentName,
-      studentDob: input.studentDob,
-      studentEmail: input.studentEmail,
-      studentPassword: input.studentPassword,
-      st_PaidFees: input.st_PaidFees,
+      name: input.name,
+      dob: input.dob,
+      email: input.email,
+      password: input.password,
+      feesPaid: input.feesPaid,
     });
+
     return res.status(201).json({
-      status: "Created",
+      success: true,
       data: result,
     });
   } catch (err) {
     return res.status(400).json({
-      status: "Error",
+      success: false,
       message: err.message,
     });
   }
@@ -58,18 +79,17 @@ async function updateStudent(req, res) {
     const studentId = req.params.id;
     const input = req.body;
     const result = await Student.findByIdAndUpdate(studentId, {
-      studentName: input.studentName,
-      studentDob: input.studentDob,
-      studentEmail: input.studentEmail,
-      studentPassword: input.studentPassword,
-      st_PaidFees: input.st_PaidFees,
-    });
+      name: input.name,
+      dob: input.dob,
+      email: input.email,
+      password: input.password,
+      feesPaid: input.feesPaid,
+    },  { new: true });
     return res.status(200).json(
       {
         status: "Success",
         data: result,
-      },
-      { new: true }
+      }
     );
   } catch (err) {
     return res.status(400).json({

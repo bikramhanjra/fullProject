@@ -7,7 +7,8 @@ let mongoURL = "mongodb://localhost:27017/school_management";
 const {connectMongoDb} = require("./connection");
 connectMongoDb(mongoURL).then(()=>console.log("MongoDb Connected"));
 
-app.use(express.urlencoded({extended:true}));
+// app.use(express.urlencoded({extended:true}));
+app.use(express.json());
 
 app.use("/", require("./routes"));
 //testing
