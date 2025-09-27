@@ -10,6 +10,6 @@ connectMongoDb(mongoURL).then(()=>console.log("MongoDb Connected"));
 // app.use(express.urlencoded({extended:true}));
 app.use(express.json());
 
-app.use("/", require("./routes"));
+app.use("/api/v1/", require("./routes"));
 //testing
 app.listen(PORT, ()=>console.log("Server Started"));

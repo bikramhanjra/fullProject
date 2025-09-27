@@ -9,7 +9,7 @@ async function getStudent(req, res) {
     });
   } catch (err) {
     return res.status(400).json({
-      status: "Error",
+      success: true,
       message: err.message,
     });
   }
@@ -48,10 +48,7 @@ async function addStudent(req, res) {
     const validation = isValidate(input);
 
     if (!validation.isValid) {
-      return res.status(400).json({
-        success: false,
-        message: validation.message,
-      });
+     throw new Error(validation.message)
     }
 
     const result = await Student.create({
