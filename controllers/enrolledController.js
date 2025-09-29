@@ -1,8 +1,8 @@
-const Course = require("../models/Course");
+const EnrolledCourse = require("../models/EnrolledCourses");
 
-async function getCourse(req, res) {
+async function getEnrolledCourse(req, res) {
   try {
-    const result = await Course.find({}).populate("teacherId");
+    const result = await EnrolledCourse.find({}).populate("studentId").populate("courseId");
     return res.status(200).json({
       status: "Success",
       data: result,
@@ -15,10 +15,10 @@ async function getCourse(req, res) {
   }
 }
 
-async function getCourseById(req, res) {
+async function getEnrolledCourseById(req, res) {
   try {
     const teacherId = req.params.id;
-    const result = await Course.findById(teacherId);
+    const result = await EnrolledCourse.findById(teacherId);
     return res.status(200).json({
       status: "Success",
       data: result,
@@ -31,16 +31,12 @@ async function getCourseById(req, res) {
   }
 }
 
-async function addCourse(req, res) {
+async function addEnrolledCourse(req, res) {
   try {
     const input = req.body;
-    const result = await Course.create({
-      courseName: input.courseName,
-      teacherId: input.teacherId,
-      capacity: input.capacity,
-      courseFees: input.courseFees,
-      courseDuration: input.courseDuration,
-      courseStartDate: input.courseStartDate,
+    const result = await EnrolledCourse.create({
+      studentId: input.studentId,
+      courseId: input.courseId,
     });
 
     const resultData = await result.save();
@@ -56,16 +52,13 @@ async function addCourse(req, res) {
   }
 }
 
-async function updateCourse(req, res) {
+async function updateEnrolledCourse(req, res) {
   try {
     const teacherId = req.params.id;
     const input = req.body;
-    const result = await Course.findByIdAndUpdate(teacherId, {
-      courseName: input.courseName,
-      capacity: input.capacity,
-      courseFees: input.courseFees,
-      courseDuration: input.courseDuration,
-      courseStartDate: input.courseStartDate,
+    const result = await EnrolledCourse.findByIdAndUpdate(teacherId, {
+      studentId: input.studentId,
+      courseId: input.courseId,
     });
     return res.status(200).json(
       {
@@ -82,10 +75,10 @@ async function updateCourse(req, res) {
   }
 }
 
-async function deleteCourse(req, res) {
+async function deleteEnrolledCourse(req, res) {
   try {
     const teacherId = req.params.id;
-    await Course.findByIdAndDelete(teacherId);
+    await EnrolledCourse.findByIdAndDelete(teacherId);
     return res.status(200).json({
       status: "Deleted",
     });
@@ -98,9 +91,9 @@ async function deleteCourse(req, res) {
 }
 
 module.exports = {
-  getCourse,
-  getCourseById,
-  addCourse,
-  updateCourse,
-  deleteCourse,
+  getEnrolledCourse,
+  deleteEnrolledCourse,
+  getEnrolledCourseById,
+  updateEnrolledCourse,
+  addEnrolledCourse,
 };

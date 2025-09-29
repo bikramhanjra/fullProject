@@ -18,6 +18,10 @@ const StudentSchema = new mongoose.Schema({
   feesPaid: {
     type: Number,
   },
+  status:{
+    type: String,
+    enum: ["active", "inactive"],
+  }
 });
 
 const Student = mongoose.model("student", StudentSchema);

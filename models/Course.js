@@ -3,6 +3,10 @@ const CourseSchema = new mongoose.Schema({
   courseName: {
     type: String,
   },
+  teacherId:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref:"teacher"
+  },
   capacity: {
     type: Number,
   },
