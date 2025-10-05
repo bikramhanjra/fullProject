@@ -1,15 +1,15 @@
-const EnrolledCourse = require("../models/EnrolledCourses");
+const EnrolledCourse = require("../models/EnrolledCourse");
 
 async function getEnrolledCourse(req, res) {
   try {
     const result = await EnrolledCourse.find({}).populate("studentId").populate("courseId");
     return res.status(200).json({
-      status: "Success",
+      success: true,
       data: result,
     });
   } catch (err) {
     return res.status(400).json({
-      status: "Error",
+      success: false,
       message: err.message,
     });
   }
@@ -20,12 +20,12 @@ async function getEnrolledCourseById(req, res) {
     const teacherId = req.params.id;
     const result = await EnrolledCourse.findById(teacherId);
     return res.status(200).json({
-      status: "Success",
+      success: true,
       data: result,
     });
   } catch (err) {
     return res.status(400).json({
-      status: "Error",
+      success: false,
       message: err.message,
     });
   }
@@ -41,12 +41,12 @@ async function addEnrolledCourse(req, res) {
 
     const resultData = await result.save();
     return res.status(201).json({
-      status: "Created",
+      success: true,
       data: resultData,
     });
   } catch (err) {
     return res.status(400).json({
-      status: "Error",
+      success: false,
       message: err.message,
     });
   }
@@ -62,14 +62,14 @@ async function updateEnrolledCourse(req, res) {
     });
     return res.status(200).json(
       {
-        status: "Success",
+        success: true,
         data: result,
       },
       { new: true }
     );
   } catch (err) {
     return res.status(400).json({
-      status: "Error",
+      success: false,
       message: err.message,
     });
   }
@@ -80,11 +80,11 @@ async function deleteEnrolledCourse(req, res) {
     const teacherId = req.params.id;
     await EnrolledCourse.findByIdAndDelete(teacherId);
     return res.status(200).json({
-      status: "Deleted",
+      success: true,
     });
   } catch (err) {
     return res.status(400).json({
-      status: "Error",
+      success: false,
       message: err.message,
     });
   }

@@ -11,6 +11,7 @@ const StudentSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
+    unique: true,
   },
   password: {
     type: String,
@@ -20,7 +21,7 @@ const StudentSchema = new mongoose.Schema({
   },
   status:{
     type: String,
-    enum: ["active", "inactive"],
+    enum: ["active", "inActive"],
   }
 });
 

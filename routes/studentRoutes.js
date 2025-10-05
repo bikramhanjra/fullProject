@@ -7,13 +7,9 @@ const {
   deleteStudent,
   updateStudent,
   updateFees,
-  getSortedStudents,
-  getStudentStatus
 } = require("../controllers/studentController");
 
 router.get("/", getStudent);
-router.get("/sorted", getSortedStudents)
-router.get("/:status", getStudentStatus)
 router.get("/:id", getStudentById);
 router.post("/",addStudent );
 router.put("/:id", updateStudent);

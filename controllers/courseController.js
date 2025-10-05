@@ -1,15 +1,25 @@
 const Course = require("../models/Course");
-
+const mongoose = require("mongoose");
 async function getCourse(req, res) {
   try {
-    const result = await Course.find({}).populate("teacherId");
+    const result = await Course.aggregate([
+      { $match: {} },
+      {
+        $lookup: {
+          from: "teachers",
+          localField: "teacherId",
+          foreignField: "_id",
+          as: "CoursesDetails",
+        },
+      },
+    ]);
     return res.status(200).json({
-      status: "Success",
+      success: true,
       data: result,
     });
   } catch (err) {
     return res.status(400).json({
-      status: "Error",
+      success: false,
       message: err.message,
     });
   }
@@ -17,15 +27,17 @@ async function getCourse(req, res) {
 
 async function getCourseById(req, res) {
   try {
-    const teacherId = req.params.id;
-    const result = await Course.findById(teacherId);
+    const courseId = req.params.id;
+    const result = await Course.aggregate([
+      { $match: { _id: new mongoose.Types.ObjectId(courseId) } },
+    ]);
     return res.status(200).json({
-      status: "Success",
+      success: true,
       data: result,
     });
   } catch (err) {
     return res.status(400).json({
-      status: "Error",
+      success: false,
       message: err.message,
     });
   }
@@ -45,12 +57,12 @@ async function addCourse(req, res) {
 
     const resultData = await result.save();
     return res.status(201).json({
-      status: "Created",
+      success: true,
       data: resultData,
     });
   } catch (err) {
     return res.status(400).json({
-      status: "Error",
+      success: false,
       message: err.message,
     });
   }
@@ -58,9 +70,9 @@ async function addCourse(req, res) {
 
 async function updateCourse(req, res) {
   try {
-    const teacherId = req.params.id;
+    const courseId = req.params.id;
     const input = req.body;
-    const result = await Course.findByIdAndUpdate(teacherId, {
+    const result = await Course.findByIdAndUpdate(courseId, {
       courseName: input.courseName,
       capacity: input.capacity,
       courseFees: input.courseFees,
@@ -69,14 +81,14 @@ async function updateCourse(req, res) {
     });
     return res.status(200).json(
       {
-        status: "Success",
+        success: true,
         data: result,
       },
       { new: true }
     );
   } catch (err) {
     return res.status(400).json({
-      status: "Error",
+      success: false,
       message: err.message,
     });
   }
@@ -84,14 +96,14 @@ async function updateCourse(req, res) {
 
 async function deleteCourse(req, res) {
   try {
-    const teacherId = req.params.id;
-    await Course.findByIdAndDelete(teacherId);
+    const courseId = req.params.id;
+    await Course.findByIdAndDelete(courseId);
     return res.status(200).json({
-      status: "Deleted",
+      success: true,
     });
   } catch (err) {
     return res.status(400).json({
-      status: "Error",
+      success: false,
       message: err.message,
     });
   }
