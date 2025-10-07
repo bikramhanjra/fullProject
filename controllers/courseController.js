@@ -3,13 +3,12 @@ const mongoose = require("mongoose");
 async function getCourse(req, res) {
   try {
     const result = await Course.aggregate([
-      { $match: {} },
       {
         $lookup: {
           from: "teachers",
           localField: "teacherId",
           foreignField: "_id",
-          as: "CoursesDetails",
+          as: "TeacherDetails",
         },
       },
     ]);

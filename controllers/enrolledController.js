@@ -2,7 +2,26 @@ const EnrolledCourse = require("../models/EnrolledCourse");
 
 async function getEnrolledCourse(req, res) {
   try {
-    const result = await EnrolledCourse.find({}).populate("studentId").populate("courseId");
+    // const result = await EnrolledCourse.find({}).populate("studentId").populate("courseId");
+
+     const result = await EnrolledCourse.aggregate([
+      {
+        $lookup: {
+          from: "students",
+          localField: "studentId",
+          foreignField: "_id",
+          as: "StudentDetails",
+        },
+      },
+      {
+        $lookup: {
+          from: "courses",
+          localField: "courseId",
+          foreignField: "_id",
+          as: "CourseDetails",
+        },
+      },
+    ]);
     return res.status(200).json({
       success: true,
       data: result,
@@ -17,8 +36,8 @@ async function getEnrolledCourse(req, res) {
 
 async function getEnrolledCourseById(req, res) {
   try {
-    const teacherId = req.params.id;
-    const result = await EnrolledCourse.findById(teacherId);
+    const enrolledId = req.params.id;
+    const result = await EnrolledCourse.findById(enrolledId);
     return res.status(200).json({
       success: true,
       data: result,
@@ -54,9 +73,9 @@ async function addEnrolledCourse(req, res) {
 
 async function updateEnrolledCourse(req, res) {
   try {
-    const teacherId = req.params.id;
+    const enrolledId = req.params.id;
     const input = req.body;
-    const result = await EnrolledCourse.findByIdAndUpdate(teacherId, {
+    const result = await EnrolledCourse.findByIdAndUpdate(enrolledId, {
       studentId: input.studentId,
       courseId: input.courseId,
     });
@@ -77,8 +96,8 @@ async function updateEnrolledCourse(req, res) {
 
 async function deleteEnrolledCourse(req, res) {
   try {
-    const teacherId = req.params.id;
-    await EnrolledCourse.findByIdAndDelete(teacherId);
+    const enrolledId = req.params.id;
+    await EnrolledCourse.findByIdAndDelete(enrolledId);
     return res.status(200).json({
       success: true,
     });

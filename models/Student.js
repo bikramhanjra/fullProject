@@ -16,6 +16,10 @@ const StudentSchema = new mongoose.Schema({
   password: {
     type: String,
   },
+  courseId: {
+    type: new mongoose.Schema.Types.ObjectId,
+    ref: "course"
+  },
   feesPaid: {
     type: Number,
   },

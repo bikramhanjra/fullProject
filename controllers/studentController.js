@@ -26,6 +26,14 @@ async function getStudent(req, res) {
     const newResult = await Student.aggregate([
       { $match: where },
       { $sort: { [sortField]: sortType } },
+      {
+        $lookup: {
+          from: "courses",
+          localField: "courseId",
+          foreignField: "_id",
+          as: "CourseDetails",
+        },
+      },
     ]);
 
     return res.status(200).json({
@@ -63,8 +71,7 @@ async function isValidate(input) {
   if (!input.dob) {
     return { isValid: false, message: "Dob is required" };
   }
-  const emailExists = await Student.findOne({email: input.email});
-  console.log(emailExists);
+  const emailExists = await Student.findOne({ email: input.email });
   if (emailExists) {
     return { isValid: false, message: "Student Allready exists" };
   }
@@ -85,6 +92,7 @@ async function addStudent(req, res) {
       dob: input.dob,
       email: input.email,
       status: input.status,
+      courseId: input.courseId,
       password: input.password,
       feesPaid: input.feesPaid,
     });
@@ -111,6 +119,8 @@ async function updateStudent(req, res) {
         name: input.name,
         dob: input.dob,
         email: input.email,
+        courseId: input.courseId,
+        status: input.status,
         password: input.password,
         feesPaid: input.feesPaid,
       },
