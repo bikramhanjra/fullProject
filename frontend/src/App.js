@@ -1,8 +1,8 @@
 import "./App.css";
-import GetStudent from "./components/GetStudent";
-import AddStudent from "./components/AddStudent";
-import UpdateStudent from "./components/UpdateStudent";
-import ViewStudent from "./components/ViewStudent";
+import ViewStudent from "./pages/students/ViewStudent";
+import ViewTeacher from "./pages/teacher/ViewTeacher";
+import ViewCourse from "./pages/courses/ViewCourse";
+import PageNotFound from "./pages/PageNotFound";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 function App() {
   return (
@@ -10,9 +10,9 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<ViewStudent/>}/>
-          <Route path="/GetStudent" element={<GetStudent/>}/>
-          <Route path="/addStudent" element={<AddStudent/>}/>
-          <Route path="update" element={<UpdateStudent/>} />
+          <Route path="/teacher" element={<ViewTeacher/>}/>
+          <Route path="/course" element={<ViewCourse/>}/>
+          <Route path="*" element={<PageNotFound/>} />
         </Routes>
       </Router>
     </>

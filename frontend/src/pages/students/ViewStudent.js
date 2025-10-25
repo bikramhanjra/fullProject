@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import GetStudent from "./GetStudent";
 import AddStudent from "./AddStudent";
+import Ui from "../../components/layouts/Ui";
 
 export default function ViewStudent() {
   const [view, setView] = useState("getStudent");
@@ -28,9 +29,9 @@ export default function ViewStudent() {
   }
 
   return (
-    <>
+    <Ui>
       {view === "getStudent" && <GetStudent onHandleView={handleView} onHandleUpdateStudent={handleUpdateStudent}/>}
       {view === "addStudent" && <AddStudent student={student} onHandleAddStudent={handleAddStudent} onHandleView={handleView} />}
-    </>
+    </Ui>
   );
 }
