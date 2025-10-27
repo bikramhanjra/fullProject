@@ -1,15 +1,17 @@
 import TextField from "@mui/material/TextField";
-import { Typography, Box} from "@mui/material";
+import { Typography, Box, FormControl } from "@mui/material";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import { brown } from "@mui/material/colors";
-
-
-export default function AddCourse({onHandleView, onHandleAddCourse, course}) {
+import Select from "@mui/material/Select";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+export default function AddCourse({onHandleView, onHandleAddCourse, course, teachers}) {
 
   const handleChange = (data) => {
     onHandleAddCourse(data)
   };
+
 
   async function onSubmit(data) {
     console.log(data);
@@ -37,7 +39,7 @@ export default function AddCourse({onHandleView, onHandleAddCourse, course}) {
     try {
       
       const res = await fetch(
-        `http://localhost:3000/api/v1/student/${courseId}`,
+        `http://localhost:3000/api/v1/course/${courseId}`,
         {
           method: "PUT",
           body: JSON.stringify(data),
@@ -56,7 +58,7 @@ export default function AddCourse({onHandleView, onHandleAddCourse, course}) {
 
   return (
     <>
-        <Box sx={{ width: "100vw", height: "100vh", bgcolor: brown[500] }}>
+        <Box sx={{height: "100vh", bgcolor: brown[500] }}>
           <Container sx={{ width: "45vw", height: "70vh", paddingTop: 10 }}>
             <Typography variant="h1" color="white">
               Add Course
@@ -109,6 +111,39 @@ export default function AddCourse({onHandleView, onHandleAddCourse, course}) {
                 value={course.courseStartDate}
                 onChange={handleChange}
               />
+              <FormControl
+                fullWidth
+                variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": { borderColor: "white" },
+                    "&:hover fieldset": { borderColor: "white" },
+                    "&.Mui-focused fieldset": { borderColor: "white" },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "white",
+                  },
+                  "& .MuiInputLabel-root.Mui-focused": {
+                    color: "white",
+                  },
+                }}
+              >
+                <InputLabel id="teacher-label" sx={{ color: "white" }}>
+                  Teacher-id
+                </InputLabel>
+                <Select
+                  labelId="teacher-label"
+                  label="teacherId"
+                  sx={{ color: "white" }}
+                  name="teacherId"
+                  value={course.teacherId}
+                  onChange={handleChange}
+                >
+                  {teachers.map((teacher)=>(
+                    <MenuItem key={teacher._id} value={teacher._id}>{teacher.name}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
               <Button
                 sx={{ marginTop: 9, backgroundColor: brown[900] }}
                 variant="contained"

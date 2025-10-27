@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { brown} from "@mui/material/colors";
+import { brown } from "@mui/material/colors";
 import { Typography, Box } from "@mui/material";
 import Button from "@mui/material/Button";
 import Table from "@mui/material/Table";
@@ -13,9 +13,9 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 
-export default function GetCourse({onHandleView, onHandleUpdateCourse}) {
+export default function GetCourse({ onHandleView, onHandleUpdateCourse, onGetTeacher }) {
   const [courses, setCourses] = useState([]);
-  const [refresh ,setRefresh] = useState(true);
+  const [refresh, setRefresh] = useState(true);
 
   async function handleDelete(data) {
     console.log("it is in dlete btn", data);
@@ -29,20 +29,21 @@ export default function GetCourse({onHandleView, onHandleUpdateCourse}) {
       );
       const courseData = await res.json();
       console.log("This is Delete Result", courseData);
-      setRefresh(false)
+      setRefresh(false);
     } catch (error) {
       console.log("Delete error", error);
     }
   }
 
   const handleUpdate = (data) => {
-    onHandleUpdateCourse(data)
-    onHandleView("addCourse")
+    onHandleUpdateCourse(data);
+    onHandleView("addCourse");
   };
 
-  const handleAddCourse = () =>{
-    onHandleView("addCourse")
-  }
+  async function handleAddCourse(){
+    await onGetTeacher();
+    onHandleView("addCourse");
+  };
 
   useEffect(() => {
     async function getData() {

@@ -73,17 +73,17 @@ export default function Header() {
             <Box sx={{ display: { xs: "none", sm: "block" } }}>
               <ul className="navigation-menu">
                 <li>
-                  <NavLink activeClassName="acitve" to={"/"}>
+                  <NavLink activeclassname="acitve" to={"/"}>
                     Student
                   </NavLink>
                 </li>
                 <li>
-                  <NavLink activeClassName="acitve" to={"/teacher"}>
+                  <NavLink activeclassname="acitve" to={"/teacher"}>
                     Teacher
                   </NavLink>
                 </li>
                 <li>
-                  <NavLink activeClassName="acitve" to={"/course"}>
+                  <NavLink activeclassname="acitve" to={"/course"}>
                     Course
                   </NavLink>
                 </li>

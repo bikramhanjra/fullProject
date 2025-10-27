@@ -69,7 +69,7 @@ export default function AddStudent({onHandleView, onHandleAddStudent, student}) 
 
   return (
     <>
-        <Box sx={{ width: "100vw", height: "100vh", bgcolor: brown[500] }}>
+        <Box sx={{height: "100vh", bgcolor: brown[500] }}>
           <Container sx={{ width: "45vw", height: "70vh", paddingTop: 10 }}>
             <Typography variant="h1" color="white">
               Add Student
