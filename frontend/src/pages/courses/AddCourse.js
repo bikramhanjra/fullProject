@@ -3,38 +3,7 @@ import { Typography, Box} from "@mui/material";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import { brown } from "@mui/material/colors";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 
-const theme = createTheme({
-  components: {
-    MuiTextField: {
-      defaultProps: {
-        variant: "outlined",
-      },
-      styleOverrides: {
-        root: {
-          "& .MuiInputLabel-root": {
-            color: "white",
-          },
-          "& .MuiInputLabel-root.Mui-focused": {
-            color: "white",
-          },
-          "& .MuiOutlinedInput-root": {
-            "& fieldset": {
-              borderColor: "white",
-            },
-            "&:hover fieldset": {
-              borderColor: "white",
-            },
-            "&.Mui-focused fieldset": {
-              borderColor: "white",
-            },
-          },
-        },
-      },
-    },
-  },
-});
 
 export default function AddCourse({onHandleView, onHandleAddCourse, course}) {
 
@@ -87,7 +56,6 @@ export default function AddCourse({onHandleView, onHandleAddCourse, course}) {
 
   return (
     <>
-      <ThemeProvider theme={theme}>
         <Box sx={{ width: "100vw", height: "100vh", bgcolor: brown[500] }}>
           <Container sx={{ width: "45vw", height: "70vh", paddingTop: 10 }}>
             <Typography variant="h1" color="white">
@@ -165,7 +133,6 @@ export default function AddCourse({onHandleView, onHandleAddCourse, course}) {
             </Box>
           </Container>
         </Box>
-      </ThemeProvider>
     </>
   );
 }

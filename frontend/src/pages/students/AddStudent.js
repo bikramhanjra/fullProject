@@ -6,38 +6,9 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Container from "@mui/material/Container";
 import { brown } from "@mui/material/colors";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 
-const theme = createTheme({
-  components: {
-    MuiTextField: {
-      defaultProps: {
-        variant: "outlined",
-      },
-      styleOverrides: {
-        root: {
-          "& .MuiInputLabel-root": {
-            color: "white",
-          },
-          "& .MuiInputLabel-root.Mui-focused": {
-            color: "white",
-          },
-          "& .MuiOutlinedInput-root": {
-            "& fieldset": {
-              borderColor: "white",
-            },
-            "&:hover fieldset": {
-              borderColor: "white",
-            },
-            "&.Mui-focused fieldset": {
-              borderColor: "white",
-            },
-          },
-        },
-      },
-    },
-  },
-});
+
+
 
 export default function AddStudent({onHandleView, onHandleAddStudent, student}) {
   // const [student, setStudent] = useState({
@@ -98,7 +69,6 @@ export default function AddStudent({onHandleView, onHandleAddStudent, student}) 
 
   return (
     <>
-      <ThemeProvider theme={theme}>
         <Box sx={{ width: "100vw", height: "100vh", bgcolor: brown[500] }}>
           <Container sx={{ width: "45vw", height: "70vh", paddingTop: 10 }}>
             <Typography variant="h1" color="white">
@@ -208,7 +178,6 @@ export default function AddStudent({onHandleView, onHandleAddStudent, student}) 
             </Box>
           </Container>
         </Box>
-      </ThemeProvider>
     </>
   );
 }

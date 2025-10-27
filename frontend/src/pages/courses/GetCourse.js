@@ -14,7 +14,7 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 
 export default function GetCourse({onHandleView, onHandleUpdateCourse}) {
-  const [course, setCourse] = useState([]);
+  const [courses, setCourses] = useState([]);
   const [refresh ,setRefresh] = useState(true);
 
   async function handleDelete(data) {
@@ -50,7 +50,7 @@ export default function GetCourse({onHandleView, onHandleUpdateCourse}) {
         const res = await fetch("http://localhost:3000/api/v1/course");
         const courseData = await res.json();
         console.log(courseData);
-        setCourse(courseData.data);
+        setCourses(courseData.data);
       } catch (err) {
         console.log("error is ", err);
       }
@@ -94,6 +94,9 @@ export default function GetCourse({onHandleView, onHandleUpdateCourse}) {
                   Course-Name
                 </TableCell>
                 <TableCell sx={{ color: "white" }} align="right">
+                  Teacher-Id
+                </TableCell>
+                <TableCell sx={{ color: "white" }} align="right">
                   Capacity
                 </TableCell>
                 <TableCell sx={{ color: "white" }} align="right">
@@ -114,7 +117,7 @@ export default function GetCourse({onHandleView, onHandleUpdateCourse}) {
               </TableRow>
             </TableHead>
             <TableBody>
-              {course.map((courseData) => (
+              {courses.map((courseData) => (
                 <TableRow
                   key={courseData._id}
                   sx={{ backgroundColor: brown[500] }}
@@ -124,6 +127,9 @@ export default function GetCourse({onHandleView, onHandleUpdateCourse}) {
                   </TableCell>
                   <TableCell align="right" sx={{ color: "white" }}>
                     {courseData.courseName}
+                  </TableCell>
+                  <TableCell align="right" sx={{ color: "white" }}>
+                    {courseData.teacherId}
                   </TableCell>
                   <TableCell align="right" sx={{ color: "white" }}>
                     {courseData.capacity}

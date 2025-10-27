@@ -14,7 +14,7 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 
 export default function GetTeacher({onHandleView, onHandleUpdateTeacher}) {
-  const [teacher, setTeacher] = useState([]);
+  const [teachers, setTeachers] = useState([]);
   const [refresh ,setRefresh] = useState(true);
 
   async function handleDelete(data) {
@@ -50,7 +50,7 @@ export default function GetTeacher({onHandleView, onHandleUpdateTeacher}) {
         const res = await fetch("http://localhost:3000/api/v1/teacher");
         const teacherData = await res.json();
         console.log(teacherData);
-        setTeacher(teacherData.data);
+        setTeachers(teacherData.data);
       } catch (err) {
         console.log("error is ", err);
       }
@@ -111,7 +111,7 @@ export default function GetTeacher({onHandleView, onHandleUpdateTeacher}) {
               </TableRow>
             </TableHead>
             <TableBody>
-              {teacher.map((teacherData) => (
+              {teachers.map((teacherData) => (
                 <TableRow
                   key={teacherData._id}
                   sx={{ backgroundColor: brown[500] }}
