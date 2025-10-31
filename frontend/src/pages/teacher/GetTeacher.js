@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { brown} from "@mui/material/colors";
+import { brown } from "@mui/material/colors";
 import { Typography, Box } from "@mui/material";
 import Button from "@mui/material/Button";
 import Table from "@mui/material/Table";
@@ -12,10 +12,16 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import PersonSearchIcon from '@mui/icons-material/PersonSearch';
 
-export default function GetTeacher({onHandleView, onHandleUpdateTeacher}) {
+export default function GetTeacher({
+  onHandleView,
+  onHandleUpdateTeacher,
+  setTeacher,
+  onHandleDetailViewer,
+}) {
   const [teachers, setTeachers] = useState([]);
-  const [refresh ,setRefresh] = useState(true);
+  const [refresh, setRefresh] = useState(true);
 
   async function handleDelete(data) {
     console.log("it is in dlete btn", data);
@@ -29,20 +35,26 @@ export default function GetTeacher({onHandleView, onHandleUpdateTeacher}) {
       );
       const teacherData = await res.json();
       console.log("This is Delete Result", teacherData);
-      setRefresh(false)
+      setRefresh(false);
     } catch (error) {
       console.log("Delete error", error);
     }
   }
 
   const handleUpdate = (data) => {
-    onHandleUpdateTeacher(data)
-    onHandleView("addTeacher")
+    onHandleUpdateTeacher(data);
+    onHandleView("addTeacher", "updateButton");
   };
-
-  const handleAddTeacher = () =>{
-    onHandleView("addTeacher")
+ 
+  const handleDetailView = (data) =>{
+    onHandleView("detailView")
+    onHandleDetailViewer(data);
   }
+
+  const handleAddTeacher = () => {
+    onHandleView("addTeacher", "addButton");
+    setTeacher({ name: "", email: "", dob: "", salary: "" });
+  };
 
   useEffect(() => {
     async function getData() {
@@ -74,7 +86,7 @@ export default function GetTeacher({onHandleView, onHandleUpdateTeacher}) {
           </Typography>
           <Box>
             <Button
-              sx={{ marginTop: 9, backgroundColor: brown[900] }}
+              sx={{ marginTop: 9, backgroundColor: brown[900], color: "white" }}
               variant="contained"
               onClick={handleAddTeacher}
             >
@@ -108,6 +120,9 @@ export default function GetTeacher({onHandleView, onHandleUpdateTeacher}) {
                 <TableCell sx={{ color: "white" }} align="right">
                   Delete
                 </TableCell>
+                <TableCell sx={{ color: "white" }} align="right">
+                  DetailView
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -139,6 +154,11 @@ export default function GetTeacher({onHandleView, onHandleUpdateTeacher}) {
                   <TableCell align="right" sx={{ color: "white" }}>
                     <IconButton onClick={() => handleDelete(teacherData)}>
                       <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                  <TableCell align="right" sx={{ color: "white", textAlign:"center" }}>
+                    <IconButton onClick={() => handleDetailView(teacherData)}>
+                      <PersonSearchIcon />
                     </IconButton>
                   </TableCell>
                 </TableRow>

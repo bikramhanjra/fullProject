@@ -5,6 +5,7 @@ import Ui from "../../components/layouts/Ui";
 
 export default function ViewCourse() {
   const [view, setView] = useState("getCourse");
+  const [viewButton, setViewButton] = useState("");
   const [course, setCourse] = useState({
     courseName: "",
     capacity: "",
@@ -15,10 +16,11 @@ export default function ViewCourse() {
   });
   const [teachers, setTeachers] = useState([]);
 
-  const handleView = (data) => {
+  const handleView = (data, data2) => {
     console.log(data);
     setView(data);
-  };
+    setViewButton(data2)
+  }; 
 
   const handleAddCourse = (e) => {
     const { name, value } = e.target;
@@ -29,6 +31,7 @@ export default function ViewCourse() {
     setCourse(courseData);
   };
 
+  
   async function getTeacher() {
     try {
       const res = await fetch("http://localhost:3000/api/v1/teacher")
@@ -47,6 +50,7 @@ export default function ViewCourse() {
           onHandleView={handleView}
           onHandleUpdateCourse={handleUpdateCourse}
           onGetTeacher={getTeacher}
+          setCourse={setCourse}
         />
       )}
       {view === "addCourse" && (
@@ -55,6 +59,7 @@ export default function ViewCourse() {
           onHandleAddCourse={handleAddCourse}
           onHandleView={handleView}
           teachers={teachers}
+          viewButton={viewButton}
         />
       )}
     </Ui>

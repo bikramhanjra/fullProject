@@ -13,7 +13,12 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 
-export default function GetCourse({ onHandleView, onHandleUpdateCourse, onGetTeacher }) {
+export default function GetCourse({
+  onHandleView,
+  onHandleUpdateCourse,
+  onGetTeacher,
+  setCourse,
+}) {
   const [courses, setCourses] = useState([]);
   const [refresh, setRefresh] = useState(true);
 
@@ -37,13 +42,21 @@ export default function GetCourse({ onHandleView, onHandleUpdateCourse, onGetTea
 
   const handleUpdate = (data) => {
     onHandleUpdateCourse(data);
-    onHandleView("addCourse");
+    onHandleView("addCourse", "updateButton");
   };
 
-  async function handleAddCourse(){
+  async function handleAddCourse() {
     await onGetTeacher();
-    onHandleView("addCourse");
-  };
+    onHandleView("addCourse", "addButton");
+    setCourse({
+      courseName: "",
+      capacity: "",
+      courseFees: "",
+      courseDuration: "",
+      courseStartDate: "",
+      teacherId: "",
+    });
+  }
 
   useEffect(() => {
     async function getData() {
@@ -75,7 +88,7 @@ export default function GetCourse({ onHandleView, onHandleUpdateCourse, onGetTea
           </Typography>
           <Box>
             <Button
-              sx={{ marginTop: 9, backgroundColor: brown[900] }}
+              sx={{ marginTop: 9, color: "white", backgroundColor: brown[900] }}
               variant="contained"
               onClick={handleAddCourse}
             >
@@ -92,19 +105,19 @@ export default function GetCourse({ onHandleView, onHandleUpdateCourse, onGetTea
               <TableRow sx={{ backgroundColor: brown[900] }}>
                 <TableCell sx={{ color: "white" }}>ID</TableCell>
                 <TableCell align="right" sx={{ color: "white" }}>
-                  Course-Name
+                  CourseName
                 </TableCell>
                 <TableCell sx={{ color: "white" }} align="right">
-                  Teacher-Id
+                  TeacherName
                 </TableCell>
                 <TableCell sx={{ color: "white" }} align="right">
                   Capacity
                 </TableCell>
                 <TableCell sx={{ color: "white" }} align="right">
-                  Course-Fees
+                  CourseFees
                 </TableCell>
                 <TableCell sx={{ color: "white" }} align="right">
-                  Course-Duration
+                  CourseDuration
                 </TableCell>
                 <TableCell sx={{ color: "white" }} align="right">
                   Course-Start-Date
@@ -130,7 +143,7 @@ export default function GetCourse({ onHandleView, onHandleUpdateCourse, onGetTea
                     {courseData.courseName}
                   </TableCell>
                   <TableCell align="right" sx={{ color: "white" }}>
-                    {courseData.teacherId}
+                    {courseData.TeacherDetails[0]?.name}
                   </TableCell>
                   <TableCell align="right" sx={{ color: "white" }}>
                     {courseData.capacity}

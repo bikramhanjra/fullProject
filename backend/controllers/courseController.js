@@ -1,5 +1,6 @@
 const Course = require("../models/Course");
 const mongoose = require("mongoose");
+
 async function getCourse(req, res) {
   try {
     const result = await Course.aggregate([
@@ -29,6 +30,34 @@ async function getCourseById(req, res) {
     const courseId = req.params.id;
     const result = await Course.aggregate([
       { $match: { _id: new mongoose.Types.ObjectId(courseId) } },
+      {
+        $lookup: {
+          from: "teachers",
+          localField: "teacherId",
+          foreignField: "_id",
+          as: "TeacherDetails",
+        },
+      },
+    ]);
+    return res.status(200).json({
+      success: true,
+      data: result,
+    });
+  } catch (err) {
+    return res.status(400).json({
+      success: false,
+      message: err.message,
+    });
+  }
+}
+
+
+async function getCourseByTeacherId(req, res) {
+  try {
+    const teacherId = req.params.id;
+    console.log("teacherID", teacherId)
+    const result = await Course.aggregate([
+      { $match: { teacherId: new mongoose.Types.ObjectId(teacherId) } }
     ]);
     return res.status(200).json({
       success: true,
@@ -114,4 +143,5 @@ module.exports = {
   addCourse,
   updateCourse,
   deleteCourse,
+  getCourseByTeacherId,
 };

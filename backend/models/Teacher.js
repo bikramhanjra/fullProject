@@ -5,7 +5,7 @@ const TeacherSchema = new mongoose.Schema({
     type: String,
   },
   dob: {
-    type: String,
+    type: Date,
   },
   email: {
     type: String,

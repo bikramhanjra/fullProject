@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { brown} from "@mui/material/colors";
+import { brown } from "@mui/material/colors";
 import { Typography, Box } from "@mui/material";
 import Button from "@mui/material/Button";
 import Table from "@mui/material/Table";
@@ -13,9 +13,9 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 
-export default function GetStudent({onHandleView, onHandleUpdateStudent}) {
+export default function GetStudent({ onHandleView, onHandleUpdateStudent, setStudent }) {
   const [students, setStudents] = useState([]);
-  const [refresh ,setRefresh] = useState(true);
+  const [refresh, setRefresh] = useState(true);
 
   async function handleDelete(data) {
     console.log("it is in dlete btn", data);
@@ -29,20 +29,28 @@ export default function GetStudent({onHandleView, onHandleUpdateStudent}) {
       );
       const studentData = await res.json();
       console.log("This is Delete Result", studentData);
-      setRefresh(false)
+      setRefresh(false);
     } catch (error) {
       console.log("Delete error", error);
     }
   }
 
   const handleUpdate = (data) => {
-    onHandleUpdateStudent(data)
-    onHandleView("addStudent")
+    onHandleUpdateStudent(data);
+    onHandleView("addStudent", "updateButton");
   };
 
-  const handleAddStudent = () =>{
-    onHandleView("addStudent")
-  }
+  const handleAddStudent = () => {
+    onHandleView("addStudent", "addButton");
+    setStudent(()=>({
+      name: "",
+      email: "",
+      dob: "",
+      password: "",
+      feesPaid: "",
+      status: "",
+    }));
+  };
 
   useEffect(() => {
     async function getData() {
@@ -74,7 +82,7 @@ export default function GetStudent({onHandleView, onHandleUpdateStudent}) {
           </Typography>
           <Box>
             <Button
-              sx={{ marginTop: 9, backgroundColor: brown[900] }}
+              sx={{ marginTop: 9, backgroundColor: brown[900], color:"white" }}
               variant="contained"
               onClick={handleAddStudent}
             >

@@ -4,11 +4,11 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { ThemeProvider } from "@mui/material/styles";
-import {theme} from "./Theme"
-
+import {darkBrownTheme} from "./Theme"
+ 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={darkBrownTheme}  >
          <App />
     </ThemeProvider>
 );

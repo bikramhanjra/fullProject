@@ -17,7 +17,7 @@ const CourseSchema = new mongoose.Schema({
     type: String,
   },
   courseStartDate: {
-    type: String,
+    type: Date,
   },
 });
 
