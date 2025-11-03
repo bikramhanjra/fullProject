@@ -46,14 +46,14 @@ export default function DetailView({ teacher }) {
         >
           <Card sx={{ width: "50vw", height: "80vh", textAlign: "center" }}>
             <CardContent>
-              <Typography gutterBottom sx={{ color: "white", marginTop:"1.5rem" }} variant="h3">
+              <Typography gutterBottom sx={{ color: "white", marginTop:"1.5rem" }} variant="h2">
                 Teacher Details
               </Typography>
 
-              <TableContainer component={Paper} sx={{ width: "30vw", margin: "auto", }}>
+              <TableContainer component={Paper} sx={{ width: "30vw", margin: "auto", marginTop:"3rem" }}>
                 <Table
                   sx={{
-                    "& td, & th": { fontSize: "1.3rem" },
+                    "& td, & th": { fontSize: "1.3rem"},
                   }}
                 >
                   <TableHead>

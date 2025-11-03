@@ -55,7 +55,6 @@ async function getCourseById(req, res) {
 async function getCourseByTeacherId(req, res) {
   try {
     const teacherId = req.params.id;
-    console.log("teacherID", teacherId)
     const result = await Course.aggregate([
       { $match: { teacherId: new mongoose.Types.ObjectId(teacherId) } }
     ]);

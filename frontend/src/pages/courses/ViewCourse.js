@@ -46,7 +46,7 @@ export default function ViewCourse() {
   return (
     <Ui>
       {view === "getCourse" && (
-        <GetCourse
+        <GetCourse 
           onHandleView={handleView}
           onHandleUpdateCourse={handleUpdateCourse}
           onGetTeacher={getTeacher}

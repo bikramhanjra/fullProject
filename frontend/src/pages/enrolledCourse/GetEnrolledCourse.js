@@ -13,13 +13,14 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 
-export default function GetCourse({
+export default function GetEnrolledCourse({
   onHandleView,
-  onHandleUpdateCourse,
-  onGetTeacher,
-  setCourse,
+  setEnrolledCourse,
+  onHandleUpdateEnrolledCourse,
+  getStudent,
+  getCourse,
 }) {
-  const [courses, setCourses] = useState([]);
+  const [enrolledCourses, setEnrolledCourses] = useState([]);
   const [refresh, setRefresh] = useState(true);
 
   async function handleDelete(data) {
@@ -27,7 +28,7 @@ export default function GetCourse({
     const courseId = data._id;
     try {
       const res = await fetch(
-        `http://localhost:3000/api/v1/course/${courseId}`,
+        `http://localhost:3000/api/v1/enrolled/${courseId}`,
         {
           method: "DELETE",
         }
@@ -41,30 +42,27 @@ export default function GetCourse({
   }
 
   const handleUpdate = (data) => {
-    onHandleUpdateCourse(data);
-    onHandleView("addCourse", "updateButton");
+    onHandleUpdateEnrolledCourse(data);
+    onHandleView("addEnrolledCourse", "updateButton");
   };
 
-  async function handleAddCourse() {
-    await onGetTeacher();
-    onHandleView("addCourse", "addButton");
-    setCourse({
-      courseName: "",
-      capacity: "",
-      courseFees: "",
-      courseDuration: "",
-      courseStartDate: "",
-      teacherId: "",
+  async function handleAddEnrolledCourse() {
+    await getStudent();
+    await getCourse();
+    onHandleView("addEnrolledCourse", "addButton");
+    setEnrolledCourse({
+      studentId: "",
+      courseId: "",
     });
   }
 
   useEffect(() => {
     async function getData() {
       try {
-        const res = await fetch("http://localhost:3000/api/v1/course");
+        const res = await fetch("http://localhost:3000/api/v1/enrolled");
         const courseData = await res.json();
-        console.log(courseData);
-        setCourses(courseData.data);
+        console.log(courseData.data);
+        setEnrolledCourses(courseData.data);
       } catch (err) {
         console.log("error is ", err);
       }
@@ -73,7 +71,7 @@ export default function GetCourse({
   }, [refresh]);
 
   return (
-    <> 
+    <>
       <Box
         sx={{
           textAlign: "center",
@@ -83,16 +81,16 @@ export default function GetCourse({
         }}
       >
         <Box sx={{ display: "flex", justifyContent: "center", gap: 40 }}>
-          <Typography variant="h1" sx={{ paddingTop: 4 }}>
-            Courses List
+          <Typography variant="h2" sx={{ paddingTop: 4 }}>
+            EnrolledCourse List
           </Typography>
           <Box>
             <Button
               sx={{ marginTop: 9, color: "white", backgroundColor: brown[900] }}
               variant="contained"
-              onClick={handleAddCourse}
+              onClick={handleAddEnrolledCourse}
             >
-              Add Course
+              Add EnrolledCourse
             </Button>
           </Box>
         </Box>
@@ -103,24 +101,12 @@ export default function GetCourse({
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
               <TableRow sx={{ backgroundColor: brown[900] }}>
-                <TableCell sx={{ color: "white" }}>ID</TableCell>
+                <TableCell sx={{ color: "white" }}>Enrolled-ID</TableCell>
                 <TableCell align="right" sx={{ color: "white" }}>
+                  StudentName
+                </TableCell>
+                <TableCell sx={{ color: "white" }} align="right">
                   CourseName
-                </TableCell>
-                <TableCell sx={{ color: "white" }} align="right">
-                  TeacherName
-                </TableCell>
-                <TableCell sx={{ color: "white" }} align="right">
-                  Capacity
-                </TableCell>
-                <TableCell sx={{ color: "white" }} align="right">
-                  CourseFees
-                </TableCell>
-                <TableCell sx={{ color: "white" }} align="right">
-                  CourseDuration
-                </TableCell>
-                <TableCell sx={{ color: "white" }} align="right">
-                  Course-Start-Date
                 </TableCell>
                 <TableCell sx={{ color: "white" }} align="right">
                   Update
@@ -131,7 +117,7 @@ export default function GetCourse({
               </TableRow>
             </TableHead>
             <TableBody>
-              {courses.map((courseData) => (
+              {enrolledCourses.map((courseData) => (
                 <TableRow
                   key={courseData._id}
                   sx={{ backgroundColor: brown[500] }}
@@ -140,22 +126,10 @@ export default function GetCourse({
                     {courseData._id}
                   </TableCell>
                   <TableCell align="right" sx={{ color: "white" }}>
-                    {courseData.courseName}
+                    {courseData.StudentDetails[0].name}
                   </TableCell>
                   <TableCell align="right" sx={{ color: "white" }}>
-                    {courseData.TeacherDetails[0]?.name}
-                  </TableCell>
-                  <TableCell align="right" sx={{ color: "white" }}>
-                    {courseData.capacity}
-                  </TableCell>
-                  <TableCell align="right" sx={{ color: "white" }}>
-                    {courseData.courseFees}
-                  </TableCell>
-                  <TableCell align="right" sx={{ color: "white" }}>
-                    {courseData.courseDuration}
-                  </TableCell>
-                  <TableCell align="right" sx={{ color: "white" }}>
-                    {courseData.courseStartDate}
+                    {courseData.CourseDetails[0].courseName}
                   </TableCell>
                   <TableCell align="right" sx={{ color: "white" }}>
                     <IconButton onClick={() => handleUpdate(courseData)}>

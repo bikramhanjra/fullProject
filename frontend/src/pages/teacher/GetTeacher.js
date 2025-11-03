@@ -18,7 +18,6 @@ export default function GetTeacher({
   onHandleView,
   onHandleUpdateTeacher,
   setTeacher,
-  onHandleDetailViewer,
 }) {
   const [teachers, setTeachers] = useState([]);
   const [refresh, setRefresh] = useState(true);
@@ -48,7 +47,7 @@ export default function GetTeacher({
  
   const handleDetailView = (data) =>{
     onHandleView("detailView")
-    onHandleDetailViewer(data);
+    onHandleUpdateTeacher(data);
   }
 
   const handleAddTeacher = () => {

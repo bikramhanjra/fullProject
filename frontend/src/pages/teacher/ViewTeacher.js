@@ -28,10 +28,10 @@ export default function ViewTeacher() {
     setTeacher(teacherData);
   };
 
-  const handleDetailViewer = (teacherData) => {
-    console.log("this is data", teacherData)
-    setTeacher(teacherData)
-  }
+  // const handleDetailViewer = (teacherData) => {
+  //   console.log("this is data", teacherData)
+  //   setTeacher(teacherData)
+  // }
 
   return (
     <Ui>
@@ -39,7 +39,6 @@ export default function ViewTeacher() {
         <GetTeacher
           onHandleView={handleView}
           onHandleUpdateTeacher={handleUpdateTeacher}
-          onHandleDetailViewer={handleDetailViewer}
           setTeacher={setTeacher}
         />
       )}

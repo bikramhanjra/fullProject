@@ -33,7 +33,7 @@ export default function Header() {
       <Divider />
       <ul className="mobile-navigation">
         <li>
-          <NavLink activeClassName={"active"} to={"/"}>
+          <NavLink activeclassname={"active"} to={"/"}>
             Student
           </NavLink>
         </li>
@@ -42,6 +42,9 @@ export default function Header() {
         </li>
         <li>
           <NavLink to={"/course"}>Courses</NavLink>
+        </li>
+        <li>
+          <NavLink to={"/enrolledCourse"}>Courses</NavLink>
         </li>
       </ul>
     </Box>
@@ -87,11 +90,11 @@ export default function Header() {
                     Course
                   </NavLink>
                 </li>
-                {/* <li>
-                  <NavLink activeClassName="acitve" to={"/contact"}>
-                    Contact
+                <li>
+                  <NavLink activeclassname="acitve" to={"/enrolledCourse"}>
+                    Enrolled-Course
                   </NavLink>
-                </li> */}
+                </li>
               </ul>
             </Box>
           </Toolbar>
