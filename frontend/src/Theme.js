@@ -2,6 +2,15 @@ import { createTheme } from "@mui/material/styles";
 import { brown } from "@mui/material/colors";
 
 export const darkBrownTheme = createTheme({
+  // breakpoints: {
+  //   values: {
+  //     xs: 0,
+  //     sm: 500,
+  //     md: 900,
+  //     lg: 1200,
+  //     xl: 1600,
+  //   },
+  // },
   palette: {
     mode: "dark",
     primary: {
@@ -31,25 +40,24 @@ export const darkBrownTheme = createTheme({
           },
           "& .MuiOutlinedInput-root": {
             "& fieldset": {
-              borderColor: "white", 
+              borderColor: "white",
             },
             "&:hover fieldset": {
-              borderColor: "white", 
+              borderColor: "white",
             },
             "&.Mui-focused fieldset": {
-              borderColor: "white", 
+              borderColor: "white",
             },
             "& input": {
               color: "white",
             },
             "& .MuiSvgIcon-root": {
-              color: "white", 
+              color: "white",
             },
           },
         },
       },
     },
-
 
     MuiOutlinedInput: {
       styleOverrides: {
@@ -62,7 +70,7 @@ export const darkBrownTheme = createTheme({
             borderColor: "#fff",
           },
           "&.Mui-focused fieldset": {
-            borderColor: "#fff", 
+            borderColor: "#fff",
           },
           "& input": {
             color: "#fff",
@@ -79,10 +87,10 @@ export const darkBrownTheme = createTheme({
         root: {
           color: "#fff",
           "& .MuiOutlinedInput-notchedOutline": {
-            borderColor: "#fff", 
+            borderColor: "#fff",
           },
           "&:hover .MuiOutlinedInput-notchedOutline": {
-            borderColor: "#fff", 
+            borderColor: "#fff",
           },
           "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
             borderColor: "#fff",
@@ -122,7 +130,6 @@ export const darkBrownTheme = createTheme({
       },
     },
 
-   
     MuiPickersCalendarHeader: {
       styleOverrides: {
         labelContainer: {

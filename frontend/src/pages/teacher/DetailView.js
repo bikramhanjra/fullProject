@@ -10,9 +10,10 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import Button from "@mui/material/Button";
 import Paper from "@mui/material/Paper";
 
-export default function DetailView({ teacher }) {
+export default function DetailView({ teacher,  onHandleView}) {
   const [CourseDetails, setCourseDetails] = useState([]);
 
   useEffect(() => {
@@ -38,22 +39,28 @@ export default function DetailView({ teacher }) {
       <Box sx={{ backgroundColor: brown[500], height: "100vh" }}>
         <Container
           sx={{
-            height: "90vh",
+            height: "100vh",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
           }}
         >
-          <Card sx={{ width: "50vw", height: "80vh", textAlign: "center" }}>
+          <Card sx={{ width: "45vw", height: "80vh", textAlign: "center" }}>
             <CardContent>
-              <Typography gutterBottom sx={{ color: "white", marginTop:"1.5rem" }} variant="h2">
+              <Typography
+                gutterBottom
+                sx={{ color: "white", marginTop:"1rem" }}
+                variant="h2"
+              >
                 Teacher Details
               </Typography>
-
-              <TableContainer component={Paper} sx={{ width: "30vw", margin: "auto", marginTop:"3rem" }}>
+              <TableContainer
+                component={Paper}
+                sx={{ width: "30vw", margin: "auto", marginTop: "1rem" }}
+              >
                 <Table
                   sx={{
-                    "& td, & th": { fontSize: "1.3rem"},
+                    "& td, & th": { fontSize: "1.3rem" },
                   }}
                 >
                   <TableHead>
@@ -76,7 +83,7 @@ export default function DetailView({ teacher }) {
                       <TableCell>
                         CourseDeatils :
                         {CourseDetails.map((details) => (
-                          <span key={details._id}>  *  {details.courseName}</span>
+                          <span key={details._id}> * {details.courseName}</span>
                         ))}
                       </TableCell>
                     </TableRow>
@@ -84,6 +91,13 @@ export default function DetailView({ teacher }) {
                 </Table>
               </TableContainer>
             </CardContent>
+            <Button
+              sx={{ marginTop: 2, backgroundColor:"GrayText" }}
+              variant="contained"
+              onClick={() => onHandleView("getTeacher")}
+            >
+              List
+            </Button>
           </Card>
         </Container>
       </Box>
