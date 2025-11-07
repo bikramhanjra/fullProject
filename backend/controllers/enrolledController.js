@@ -1,10 +1,11 @@
 const EnrolledCourse = require("../models/EnrolledCourse");
+const nodemailer = require("nodemailer");
 
 async function getEnrolledCourse(req, res) {
   try {
     // const result = await EnrolledCourse.find({}).populate("studentId").populate("courseId");
 
-     const result = await EnrolledCourse.aggregate([
+    const result = await EnrolledCourse.aggregate([
       {
         $lookup: {
           from: "students",
@@ -57,8 +58,37 @@ async function addEnrolledCourse(req, res) {
       studentId: input.studentId,
       courseId: input.courseId,
     });
-
     const resultData = await result.save();
+    try {
+      const enrolledData = await EnrolledCourse.findById(
+        resultData._id
+      ).populate("studentId");
+      const studentEmail = enrolledData.studentId.email;
+      // console.log("This is student Email", studentEmail);
+       const testAccount = await nodemailer.createTestAccount();
+      // console.log("this is testaccount",testAccount)
+      const transporter =  nodemailer.createTransport({
+        host: testAccount.smtp.host,
+        port: testAccount.smtp.port,
+        secure: testAccount.smtp.secure,
+        auth: {
+          user: testAccount.user,
+          pass: testAccount.pass,
+        },
+      });
+      const info = await transporter.sendMail({
+        from: '"Abc School" <abcSchool@email.com>',
+        to: studentEmail,
+        subject: "Addmission Confirmation",
+        text: "Thanks for getting addmission in my School , This is your Addmission confirmation",
+        html: "<br>Thanks for getting addmission in my School , This is your Addmission confirmation</br>",
+      });
+      console.log("Message sent: %s", info.messageId);
+      console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+    } catch (error) {
+      console.log("This is error ", error);
+    }
+
     return res.status(201).json({
       success: true,
       data: resultData,
