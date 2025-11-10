@@ -33,7 +33,7 @@ export default function Header() {
       <Divider />
       <ul className="mobile-navigation">
         <li>
-          <NavLink activeclassname={"active"} to={"/"}>
+          <NavLink activeclassname={"active"} to={"/student"}>
             Student
           </NavLink>
         </li>
@@ -76,7 +76,7 @@ export default function Header() {
             <Box sx={{ display: { xs: "none", sm: "block" } }}>
               <ul className="navigation-menu">
                 <li>
-                  <NavLink activeclassname="acitve" to={"/"}>
+                  <NavLink activeclassname="acitve" to={"/student"}>
                     Student
                   </NavLink>
                 </li>
