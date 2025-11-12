@@ -41,7 +41,9 @@ export default function GetEnrolledCourse({
     }
   }
 
-  const handleUpdate = (data) => {
+  const handleUpdate = async (data) => {
+     await getStudent();
+    await getCourse();
     onHandleUpdateEnrolledCourse(data);
     onHandleView("addEnrolledCourse", "updateButton");
   };
@@ -112,7 +114,7 @@ export default function GetEnrolledCourse({
                   Update
                 </TableCell>
                 <TableCell sx={{ color: "white" }} align="right">
-                  Delete
+                  Delete 
                 </TableCell>
               </TableRow>
             </TableHead>

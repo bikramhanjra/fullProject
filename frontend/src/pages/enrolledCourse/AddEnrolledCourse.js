@@ -50,7 +50,7 @@ export default function AddCourse({
           body: JSON.stringify(data),
           headers: {
             "Content-type": "application/json",
-          },
+          }, 
         }
       );
       const courseData = await res.json();

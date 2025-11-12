@@ -40,7 +40,8 @@ export default function GetCourse({
     }
   }
 
-  const handleUpdate = (data) => {
+  const handleUpdate = async (data) => {
+    await onGetTeacher();
     onHandleUpdateCourse(data);
     onHandleView("addCourse", "updateButton");
   };
