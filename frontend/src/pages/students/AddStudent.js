@@ -16,6 +16,7 @@ import IconButton from "@mui/material/IconButton";
 import Visibility from "@mui/icons-material/Visibility";
 import InputAdornment from "@mui/material/InputAdornment";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import Snackbar from "@mui/material/Snackbar";
 
 export default function AddStudent({
   onHandleView,
@@ -39,8 +40,34 @@ export default function AddStudent({
     onHandleAddStudent(data);
   };
 
+  const [snackbar, setSnackBar] = useState({
+    open: false,
+    message: "",
+    vertical: "top",
+    horizontal: "right",
+  });
+
+  const handleOpen = (message) => {
+    setSnackBar({
+      open: true,
+      message,
+      vertical: "top",
+      horizontal: "right",
+    });
+  };
+
+  const handleClose = () => {
+    setSnackBar({ ...snackbar, open: false });
+  };
+
   async function onSubmit(data) {
     console.log(data);
+    const emailFormat = await checkFormat(data.email);
+
+    if (!emailFormat.success) {
+      handleOpen("Invalid email address");
+      return;
+    }
 
     try {
       const res = await fetch("http://localhost:3000/api/v1/student", {
@@ -52,16 +79,38 @@ export default function AddStudent({
       });
       const studentData = await res.json();
       console.log("it is student data", studentData);
-      alert("Student is Added");
-      onHandleView("getStudent");
+      if (studentData.success === true) {
+        handleOpen("Student Added");
+        setTimeout(function () {
+          onHandleView("getStudent");
+        }, 2000);
+      } else {
+        throw new Error(studentData.message);
+      }
     } catch (error) {
+      handleOpen(error.message);
       console.log("Post Error is", error);
     }
+  }
+
+  async function checkFormat(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return { success: false };
+    }
+
+    return { success: true };
   }
 
   async function onUpdateSubmit(data) {
     const studentId = data._id;
     console.log(data);
+    const emailFormat = await checkFormat(data.email);
+
+    if (!emailFormat.success) {
+      handleOpen("Invalid email address");
+      return;
+    }
 
     try {
       const res = await fetch(
@@ -76,8 +125,16 @@ export default function AddStudent({
       );
       const studentData = await res.json();
       console.log("it is student data", studentData);
-      alert("Updated");
+      if (studentData.success === true) {
+        handleOpen("Student Updated");
+        setTimeout(function () {
+          onHandleView("getStudent");
+        }, 2000);
+      } else {
+        throw new Error(studentData.message);
+      }
     } catch (error) {
+      handleOpen(error.message);
       console.log("PATCH Error is", error);
     }
   }
@@ -86,8 +143,21 @@ export default function AddStudent({
     <>
       <Box sx={{ height: "100vh", bgcolor: brown[500] }}>
         <Container sx={{ width: "36vw", height: "90vh", paddingTop: 10 }}>
+          <Snackbar
+            anchorOrigin={{
+              vertical: snackbar.vertical,
+              horizontal: snackbar.horizontal,
+            }}
+            open={snackbar.open}
+            onClose={handleClose}
+            message={snackbar.message}
+            key={snackbar.vertical + snackbar.horizontal}
+            autoHideDuration={5000}
+          />
           <Typography variant="h2" textAlign="center" color="white">
-            {viewButton === "addButton" ? "Add Student" : "Update Student"}
+            {viewButton === "addButton" || "cancelButton"
+              ? "Add Student"
+              : "Update Student"}
           </Typography>
 
           <Box
@@ -130,7 +200,6 @@ export default function AddStudent({
                         name: "dob",
                         value: "",
                       },
-                      
                     });
                   }
                 }}
@@ -224,9 +293,9 @@ export default function AddStudent({
                 <MenuItem value="inActive">In Active</MenuItem>
               </Select>
             </FormControl>
-            {viewButton === "addButton" ? (
+            {viewButton === "addButton" || "cancelButton" ? (
               <Button
-                sx={{ marginTop: 9, backgroundColor: brown[900]}}
+                sx={{ marginTop: 9, backgroundColor: brown[900] }}
                 variant="contained"
                 onClick={() => onSubmit(student)}
               >
@@ -234,7 +303,11 @@ export default function AddStudent({
               </Button>
             ) : (
               <Button
-                sx={{ marginTop: 9, backgroundColor: brown[900] , marginLeft:"2rem"}}
+                sx={{
+                  marginTop: 9,
+                  backgroundColor: brown[900],
+                  marginLeft: "2rem",
+                }}
                 variant="contained"
                 onClick={() => onUpdateSubmit(student)}
               >
@@ -242,13 +315,23 @@ export default function AddStudent({
               </Button>
             )}
 
-            <Button
-              sx={{ marginTop: 9, backgroundColor: brown[900] }}
-              variant="contained"
-              onClick={() => onHandleView("getStudent")}
-            >
-              Cancel
-            </Button>
+            {viewButton === "cancelButton" ? (
+              <Button
+                sx={{ marginTop: 9, backgroundColor: brown[900] }}
+                variant="contained"
+                onClick={() => onHandleView("login")}
+              >
+                Cancel
+              </Button>
+            ) : (
+              <Button
+                sx={{ marginTop: 9, backgroundColor: brown[900] }}
+                variant="contained"
+                onClick={() => onHandleView("getStudent")}
+              >
+                Cancel
+              </Button>
+            )}
           </Box>
         </Container>
       </Box>

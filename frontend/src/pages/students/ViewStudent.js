@@ -1,10 +1,11 @@
 import { useState } from "react";
 import GetStudent from "./GetStudent";
 import AddStudent from "./AddStudent";
+import Login from "./Login";
 import Ui from "../../components/layouts/Ui";
 
 export default function ViewStudent() {
-  const [view, setView] = useState("getStudent");
+  const [view, setView] = useState("login");
   const [viewButton, setViewButton] = useState("");
   const [student, setStudent] = useState({
     name: "",
@@ -26,11 +27,12 @@ export default function ViewStudent() {
   };
 
   const handleUpdateStudent = (studentData) => {
-    setStudent(studentData); 
+    setStudent(studentData);
   };
 
   return (
-    <Ui>
+    <Ui> 
+      {view === "login" && <Login   onHandleView={handleView}/>}
       {view === "getStudent" && (
         <GetStudent
           onHandleView={handleView}

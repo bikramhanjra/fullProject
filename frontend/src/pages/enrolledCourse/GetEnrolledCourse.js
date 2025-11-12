@@ -126,10 +126,16 @@ export default function GetEnrolledCourse({
                     {courseData._id}
                   </TableCell>
                   <TableCell align="right" sx={{ color: "white" }}>
-                    {courseData.StudentDetails[0].name}
+                    {courseData.StudentDetails &&
+                    courseData.StudentDetails.length > 0
+                      ? courseData.StudentDetails[0].name
+                      : "No Student Yet"}
                   </TableCell>
                   <TableCell align="right" sx={{ color: "white" }}>
-                    {courseData.CourseDetails[0].courseName}
+                    {courseData.CourseDetails &&
+                    courseData.CourseDetails.length > 0
+                      ? courseData.CourseDetails[0].courseName
+                      : "No Course Yet"}
                   </TableCell>
                   <TableCell align="right" sx={{ color: "white" }}>
                     <IconButton onClick={() => handleUpdate(courseData)}>

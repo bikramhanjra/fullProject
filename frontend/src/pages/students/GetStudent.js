@@ -13,9 +13,13 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 
-export default function GetStudent({ onHandleView, onHandleUpdateStudent, setStudent }) {
+export default function GetStudent({
+  onHandleView,
+  onHandleUpdateStudent,
+  setStudent,
+}) {
   const [students, setStudents] = useState([]);
-  const [refresh, setRefresh] = useState(true);
+  const [refresh, setRefresh] = useState(false);
 
   async function handleDelete(data) {
     console.log("it is in dlete btn", data);
@@ -29,7 +33,7 @@ export default function GetStudent({ onHandleView, onHandleUpdateStudent, setStu
       );
       const studentData = await res.json();
       console.log("This is Delete Result", studentData);
-      setRefresh(false);
+      setRefresh(prev => !prev);
     } catch (error) {
       console.log("Delete error", error);
     }
@@ -42,7 +46,7 @@ export default function GetStudent({ onHandleView, onHandleUpdateStudent, setStu
 
   const handleAddStudent = () => {
     onHandleView("addStudent", "addButton");
-    setStudent(()=>({
+    setStudent(() => ({
       name: "",
       email: "",
       dob: "",
@@ -76,23 +80,35 @@ export default function GetStudent({ onHandleView, onHandleUpdateStudent, setStu
           height: "100vh",
         }}
       >
-        <Box sx={{ display: "flex", justifyContent: "center", gap: 40 }}>
-          <Typography variant="h1" sx={{ paddingTop: 4 }}>
+        <Box sx={{ display: "flex", justifyContent: "center", gap: 32 }}>
+          <Typography variant="h2" sx={{ paddingTop: 4 }}>
             Students List
           </Typography>
           <Box>
             <Button
-              sx={{ marginTop: 9, backgroundColor: brown[900], color:"white" }}
+              sx={{ marginTop: 9, backgroundColor: brown[900], color: "white" }}
               variant="contained"
               onClick={handleAddStudent}
             >
               Add Student
             </Button>
+            <Button
+              sx={{ marginTop: 9, marginLeft:9, backgroundColor: brown[900], color: "white" }}
+              variant="contained"
+              onClick={()=> onHandleView("login")}
+            >
+              LogOut
+            </Button>
           </Box>
         </Box>
         <TableContainer
           component={Paper}
-          sx={{ maxWidth: 1000, mx: "auto", mt: 3 }}
+          sx={{
+            maxWidth: 1000,
+            mx: "auto",
+            mt: 3,
+            maxHeight: "60vh",
+          }}
         >
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>

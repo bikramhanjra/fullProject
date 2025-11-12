@@ -98,7 +98,7 @@ export default function GetCourse({
         </Box>
         <TableContainer
           component={Paper}
-          sx={{ maxWidth: 1000, mx: "auto", mt: 3 }}
+          sx={{ maxWidth: 1000, mx: "auto", mt: 3, maxHeight: "60vh", }}
         >
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>

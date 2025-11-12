@@ -10,28 +10,40 @@ import {
   Card,
   Stack,
 } from "@mui/material";
+import Snackbar from "@mui/material/Snackbar";
 import { brown } from "@mui/material/colors";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
-export default function SignIn() {
-  const navigate = useNavigate();
-
+export default function Login({ onHandleView }) {
   const [user, setUser] = useState({
-    name: "",
     email: "",
     password: "",
   });
+  const [snackbar, setSnackBar] = useState({
+    open: false,
+    message: "",
+    vertical: "top",
+    horizontal: "right",
+  });
+
+  const handleOpen = (message) => {
+    setSnackBar({
+      open: true,
+      message,
+      vertical: "top",
+      horizontal: "right",
+    });
+  };
+
+  const handleClose = () => {
+    setSnackBar({ ...snackbar, open: false });
+  };
 
   const handleChange = (user) => {
     const { name, value } = user.target;
     setUser((prev) => ({ ...prev, [name]: value }));
   };
-
   async function validations() {
-    if (!user.name) {
-      return { isValid: false, message: "name is required" };
-    }
     if (!user.email) {
       return { isValid: false, message: "Email is required" };
     }
@@ -41,16 +53,15 @@ export default function SignIn() {
 
     return { isValid: true, message: "Requirements are fulfilled" };
   }
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       const validation = await validations(user);
+
       if (!validation.isValid) {
         throw new Error(validation.message);
       }
-      const res = await fetch("http://localhost:3000/api/v1/user", {
+      const res = await fetch("http://localhost:3000/api/v1/student/login", {
         method: "POST",
         body: JSON.stringify(user),
         headers: {
@@ -58,16 +69,32 @@ export default function SignIn() {
         },
       });
       const data = await res.json();
-      console.log("this is data from backend", data);
-      navigate("/");
-      setUser({ name: "", email: "", password: "" });
+      console.log(data);
+      if (!data.status) {
+        throw new Error(data.message);
+      }
+
+      onHandleView("getStudent");
     } catch (err) {
-      alert(err.message);
+      handleOpen(err.message);
+      // alert(err.message);
     }
   };
+
   return (
     <>
       <CssBaseline />
+      <Snackbar
+        anchorOrigin={{
+          vertical: snackbar.vertical,
+          horizontal: snackbar.horizontal,
+        }}
+        open={snackbar.open}
+        onClose={handleClose}
+        message={snackbar.message}
+        key={snackbar.vertical + snackbar.horizontal}
+        autoHideDuration={5000}
+      />
       <Stack
         alignItems="center"
         justifyContent="center"
@@ -79,7 +106,7 @@ export default function SignIn() {
             variant="h5"
             sx={{ textAlign: "center", mb: 2 }}
           >
-            Sign Up
+            Login
           </Typography>
 
           <Box
@@ -92,18 +119,6 @@ export default function SignIn() {
               gap: 2,
             }}
           >
-            <FormControl>
-              <FormLabel htmlFor="name">Name</FormLabel>
-              <TextField
-                id="name"
-                type="name"
-                name="name"
-                value={user.name}
-                onChange={handleChange}
-                placeholder="abc"
-                fullWidth
-              />
-            </FormControl>
             <FormControl>
               <FormLabel htmlFor="email">Email</FormLabel>
               <TextField
@@ -131,13 +146,16 @@ export default function SignIn() {
             </FormControl>
 
             <Button type="submit" variant="contained" fullWidth>
-              Sign Up
+              Log In
             </Button>
 
             <Typography sx={{ textAlign: "center", mt: 1 }}>
-              Alrealy have an account?{" "}
-              <Link href="/" variant="body2">
-                Login
+              Don’t have an account?{" "}
+              <Link
+                onClick={() => onHandleView("addStudent", "cancelButton")}
+                variant="body2"
+              >
+                Sign up
               </Link>
             </Typography>
           </Box>
