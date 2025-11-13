@@ -1,15 +1,14 @@
 import TextField from "@mui/material/TextField";
-// import Select from "@mui/material/Select";
 import { Typography, Box } from "@mui/material";
 import Button from "@mui/material/Button";
-// import InputLabel from "@mui/material/InputLabel";
-// import MenuItem from "@mui/material/MenuItem";
 import Container from "@mui/material/Container";
 import { brown } from "@mui/material/colors";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
+import { useState } from "react";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import Snackbar from "@mui/material/Snackbar";
 
 export default function AddTeacher({
   onHandleView,
@@ -17,14 +16,37 @@ export default function AddTeacher({
   teacher,
   viewButton,
 }) {
+  const [snackbar, setSnackBar] = useState({
+    open: false,
+    message: "",
+    vertical: "top",
+    horizontal: "right",
+  });
+
+  const handleOpen = (message) => {
+    setSnackBar({
+      open: true,
+      message,
+      vertical: "top",
+      horizontal: "right",
+    });
+  };
+
+  const handleClose = () => {
+    setSnackBar({ ...snackbar, open: false });
+  };
+
   const handleChange = (data) => {
     onHandleAddTeacher(data);
   };
 
   async function onSubmit(data) {
-    console.log(data);
+    const emailFormat = await checkFormat(data.email);
 
     try {
+      if (!emailFormat.success) {
+        throw new Error(emailFormat.message);
+      }
       const res = await fetch("http://localhost:3000/api/v1/teacher", {
         method: "POST",
         body: JSON.stringify(data),
@@ -33,18 +55,41 @@ export default function AddTeacher({
         },
       });
       const teacherData = await res.json();
-      console.log("it is student data", teacherData);
-      alert("Teacher is Added");
+      if (teacherData.success === true) {
+        handleOpen("Added");
+        setTimeout(() => {
+          onHandleView("getTeacher");
+        }, 2000);
+      } else {
+        throw new Error(teacherData.message);
+      }
     } catch (error) {
-      console.log("Post Error is", error);
+      console.log(error);
+      handleOpen(error.message);
     }
+  }
+
+  async function checkFormat(email) {
+    if (!email) {
+      return { success: false, message: "Email is required" };
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email)) {
+      return { success: false, message: "Invalid Email Address" };
+    }
+
+    return { success: true };
   }
 
   async function onUpdateSubmit(data) {
     const teacherId = data._id;
-    console.log(data);
+    const emailFormat = await checkFormat(data.email);
 
     try {
+      if (!emailFormat.success) {
+        throw new Error(emailFormat.message);
+      }
       const res = await fetch(
         `http://localhost:3000/api/v1/teacher/${teacherId}`,
         {
@@ -56,16 +101,34 @@ export default function AddTeacher({
         }
       );
       const teacherData = await res.json();
-      console.log("it is student data", teacherData);
-      alert("Updated");
+      if (teacherData.success === true) {
+        handleOpen("Updated");
+        setTimeout(() => {
+          onHandleView("getTeacher");
+        }, 2000);
+      } else {
+        throw new Error(teacherData.message);
+      }
     } catch (error) {
-      console.log("PATCH Error is", error);
+      console.log(error);
+      handleOpen(error.message);
     }
   }
 
   return (
     <>
       <Box sx={{ height: "100vh", bgcolor: brown[500] }}>
+        <Snackbar
+          anchorOrigin={{
+            vertical: snackbar.vertical,
+            horizontal: snackbar.horizontal,
+          }}
+          open={snackbar.open}
+          onClose={handleClose}
+          message={snackbar.message}
+          key={snackbar.vertical + snackbar.horizontal}
+          autoHideDuration={5000}
+        />
         <Container sx={{ width: "36vw", height: "90vh", paddingTop: 10 }}>
           <Typography variant="h2" textAlign="center" color="white">
             {viewButton === "addButton" ? "Add Teacher" : "Update Teacher"}
@@ -104,7 +167,7 @@ export default function AddTeacher({
                         value: newValue.toISOString(),
                       },
                     });
-                  } else { 
+                  } else {
                     handleChange({
                       target: {
                         name: "dob",

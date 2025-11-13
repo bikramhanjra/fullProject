@@ -77,7 +77,7 @@ async function isValidate(input) {
   }
   return { isValid: true, message: "Requirements are fullfilled" };
 }
-
+ 
 const checkUser = async (req, res) => {
   try {
     const studentInput = req.body;

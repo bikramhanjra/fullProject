@@ -12,6 +12,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import Snackbar from "@mui/material/Snackbar";
 
 export default function GetStudent({
   onHandleView,
@@ -20,9 +21,26 @@ export default function GetStudent({
 }) {
   const [students, setStudents] = useState([]);
   const [refresh, setRefresh] = useState(false);
+  const [snackbar, setSnackBar] = useState({
+    open: false,
+    message: "",
+    vertical: "top",
+    horizontal: "right",
+  });
+  const handleOpen = (message) => {
+    setSnackBar({
+      open: true,
+      message,
+      vertical: "top",
+      horizontal: "right",
+    });
+  };
+
+  const handleClose = () => {
+    setSnackBar({ ...snackbar, open: false });
+  };
 
   async function handleDelete(data) {
-    console.log("it is in dlete btn", data);
     const studentId = data._id;
     try {
       const res = await fetch(
@@ -32,8 +50,11 @@ export default function GetStudent({
         }
       );
       const studentData = await res.json();
-      console.log("This is Delete Result", studentData);
-      setRefresh(prev => !prev);
+      if (!studentData.success) {
+        throw new Error(studentData.message);
+      }
+      setRefresh((prev) => !prev); 
+      handleOpen("Student Deleted")
     } catch (error) {
       console.log("Delete error", error);
     }
@@ -80,6 +101,18 @@ export default function GetStudent({
           height: "100vh",
         }}
       >
+        {" "}
+        <Snackbar
+          anchorOrigin={{
+            vertical: snackbar.vertical,
+            horizontal: snackbar.horizontal,
+          }}
+          open={snackbar.open}
+          onClose={handleClose}
+          message={snackbar.message}
+          key={snackbar.vertical + snackbar.horizontal}
+          autoHideDuration={4000}
+        />
         <Box sx={{ display: "flex", justifyContent: "center", gap: 32 }}>
           <Typography variant="h2" sx={{ paddingTop: 4 }}>
             Students List
@@ -93,9 +126,14 @@ export default function GetStudent({
               Add Student
             </Button>
             <Button
-              sx={{ marginTop: 9, marginLeft:9, backgroundColor: brown[900], color: "white" }}
+              sx={{
+                marginTop: 9,
+                marginLeft: 9,
+                backgroundColor: brown[900],
+                color: "white",
+              }}
               variant="contained"
-              onClick={()=> onHandleView("login")}
+              onClick={() => onHandleView("login")}
             >
               LogOut
             </Button>

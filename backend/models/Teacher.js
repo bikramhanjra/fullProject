@@ -6,10 +6,12 @@ const TeacherSchema = new mongoose.Schema({
   },
   dob: {
     type: Date,
+    required: true,
   },
   email: {
     type: String,
     unique: true,
+    required: true
   },
   salary: {
     type: Number,

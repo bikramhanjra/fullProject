@@ -144,7 +144,7 @@ export default function AddStudent({
       <Box sx={{ height: "100vh", bgcolor: brown[500] }}>
         <Container sx={{ width: "36vw", height: "90vh", paddingTop: 10 }}>
           <Snackbar
-            anchorOrigin={{
+            anchorOrigin={{ 
               vertical: snackbar.vertical,
               horizontal: snackbar.horizontal,
             }}

@@ -37,9 +37,30 @@ async function getTeacherById(req, res) {
   }
 }
 
+async function isValidate(input) {
+  if (!input.email) {
+    return { isValid: false, message: "email is required" };
+  }
+  if (!input.dob) {
+    return { isValid: false, message: "Dob is required" };
+  }
+  const emailExists = await Teacher.findOne({ email: input.email });
+  if (emailExists) {
+    return { isValid: false, message: "Teacher Allready exists" };
+  }
+  return { isValid: true, message: "Requirements are fullfilled" };
+}
+
 async function addTeacher(req, res) {
   try {
     const input = req.body;
+
+    const validation = await isValidate(input);
+
+    if (!validation.isValid) {
+      throw new Error(validation.message);
+    }
+
     const result = await Teacher.create({
       name: input.name,
       dob: input.dob,
