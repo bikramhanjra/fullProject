@@ -1,6 +1,7 @@
 import {
   AppBar,
   Box,
+  Button,
   Divider,
   Drawer,
   IconButton,
@@ -13,9 +14,16 @@ import "../../styles/NavigationStyle.css";
 import ListIcon from "@mui/icons-material/List";
 import { useState } from "react";
 import { brown } from "@mui/material/colors";
+import { useNavigate } from "react-router-dom";
 
 export default function Header() {
   const [moblieOpen, setMobileOpen] = useState(false);
+  const navigate = useNavigate()
+  const handleLogout  = () =>{
+    localStorage.removeItem("login")
+
+    navigate("/")
+  }
   const handleDrawerToogle = () => {
     setMobileOpen(!moblieOpen);
   };
@@ -33,7 +41,7 @@ export default function Header() {
       <Divider />
       <ul className="mobile-navigation">
         <li>
-          <NavLink activeclassname={"active"} to={"/"}>
+          <NavLink activeclassname={"active"} to={"/Student"}>
             Student
           </NavLink>
         </li>
@@ -44,7 +52,10 @@ export default function Header() {
           <NavLink to={"/course"}>Courses</NavLink>
         </li>
         <li>
-          <NavLink to={"/enrolledCourse"}>Courses</NavLink>
+          <NavLink to={"/enrolledCourse"}>enrolledCourse</NavLink>
+        </li>
+        <li>
+          <Button onClick={handleLogout}>Logout</Button>
         </li>
       </ul>
     </Box>
@@ -76,7 +87,7 @@ export default function Header() {
             <Box sx={{ display: { xs: "none", sm: "block" } }}>
               <ul className="navigation-menu">
                 <li>
-                  <NavLink activeclassname="acitve" to={"/"}>
+                  <NavLink activeclassname="acitve" to={"/Student"}>
                     Student
                   </NavLink>
                 </li>
@@ -94,6 +105,9 @@ export default function Header() {
                   <NavLink activeclassname="acitve" to={"/enrolledCourse"}>
                     Enrolled-Course
                   </NavLink>
+                </li>
+                <li>
+                  <Button  activeclassname="acitve" style={{marginTop:"0.5rem"}} onClick={handleLogout}>Logout</Button>
                 </li>
               </ul>
             </Box>

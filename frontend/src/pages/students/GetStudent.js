@@ -53,8 +53,8 @@ export default function GetStudent({
       if (!studentData.success) {
         throw new Error(studentData.message);
       }
-      setRefresh((prev) => !prev); 
-      handleOpen("Student Deleted")
+      setRefresh((prev) => !prev);
+      handleOpen("Student Deleted");
     } catch (error) {
       console.log("Delete error", error);
     }
@@ -98,7 +98,7 @@ export default function GetStudent({
           textAlign: "center",
           color: "white",
           backgroundColor: brown[500],
-          height: "100vh",
+          height: "100vh"
         }}
       >
         {" "}
@@ -113,7 +113,7 @@ export default function GetStudent({
           key={snackbar.vertical + snackbar.horizontal}
           autoHideDuration={4000}
         />
-        <Box sx={{ display: "flex", justifyContent: "center", gap: 32 }}>
+        <Box sx={{ display: "flex", justifyContent: "center"}}>
           <Typography variant="h2" sx={{ paddingTop: 4 }}>
             Students List
           </Typography>
@@ -125,22 +125,10 @@ export default function GetStudent({
             >
               Add Student
             </Button>
-            <Button
-              sx={{
-                marginTop: 9,
-                marginLeft: 9,
-                backgroundColor: brown[900],
-                color: "white",
-              }}
-              variant="contained"
-              onClick={() => onHandleView("login")}
-            >
-              LogOut
-            </Button>
           </Box>
         </Box>
         <TableContainer
-          component={Paper}
+          component={Paper} 
           sx={{
             maxWidth: 1000,
             mx: "auto",

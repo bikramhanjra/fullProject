@@ -144,7 +144,7 @@ export default function AddStudent({
       <Box sx={{ height: "100vh", bgcolor: brown[500] }}>
         <Container sx={{ width: "36vw", height: "90vh", paddingTop: 10 }}>
           <Snackbar
-            anchorOrigin={{ 
+            anchorOrigin={{
               vertical: snackbar.vertical,
               horizontal: snackbar.horizontal,
             }}
@@ -155,9 +155,7 @@ export default function AddStudent({
             autoHideDuration={5000}
           />
           <Typography variant="h2" textAlign="center" color="white">
-            {viewButton === "addButton" || "cancelButton"
-              ? "Add Student"
-              : "Update Student"}
+            {viewButton === "addButton" ? "Add Student" : "Update Student"}
           </Typography>
 
           <Box
@@ -293,7 +291,7 @@ export default function AddStudent({
                 <MenuItem value="inActive">In Active</MenuItem>
               </Select>
             </FormControl>
-            {viewButton === "addButton" || "cancelButton" ? (
+            {viewButton === "addButton" ? (
               <Button
                 sx={{ marginTop: 9, backgroundColor: brown[900] }}
                 variant="contained"
@@ -315,23 +313,13 @@ export default function AddStudent({
               </Button>
             )}
 
-            {viewButton === "cancelButton" ? (
-              <Button
-                sx={{ marginTop: 9, backgroundColor: brown[900] }}
-                variant="contained"
-                onClick={() => onHandleView("login")}
-              >
-                Cancel
-              </Button>
-            ) : (
-              <Button
-                sx={{ marginTop: 9, backgroundColor: brown[900] }}
-                variant="contained"
-                onClick={() => onHandleView("getStudent")}
-              >
-                Cancel
-              </Button>
-            )}
+            <Button
+              sx={{ marginTop: 9, backgroundColor: brown[900] }}
+              variant="contained"
+              onClick={() => onHandleView("getStudent")}
+            >
+              Cancel
+            </Button>
           </Box>
         </Container>
       </Box>
