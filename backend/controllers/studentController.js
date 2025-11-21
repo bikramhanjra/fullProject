@@ -77,36 +77,7 @@ async function isValidate(input) {
   }
   return { isValid: true, message: "Requirements are fullfilled" };
 }
- 
-const checkUser = async (req, res) => {
-  try {
-    const studentInput = req.body;
-    console.log("this is userInput", studentInput);
-    const result = await Student.findOne({email: studentInput.email});
-     
-    if(!result){
-        throw new Error("No Account Exists")
-    }
-    
-     const passwordMatch = await bcrypt.compare(studentInput.password, result.password);
 
-    if(!passwordMatch){
-        throw new Error("Password is Incorrect")
-    }
-
-    console.log("thi si result ", result)
-    res.status(200).json({
-      status: true,
-      message: "Password Match, Login Successfull"
-    });
-  } catch (error) {
-    console.log("this is error", error);
-    return res.status(400).json({
-      status: false,
-      message: error.message,
-    });
-  }
-};
 
 async function addStudent(req, res) {
   try {
@@ -228,7 +199,6 @@ module.exports = {
   updateStudent,
   deleteStudent,
   updateFees,
-  checkUser,
 };
 
 // function isStatusValidate(status) {
@@ -237,3 +207,34 @@ module.exports = {
 //       }
 //       return
 //     }
+
+
+// const checkUser = async (req, res) => {
+//   try {
+//     const studentInput = req.body;
+//     console.log("this is userInput", studentInput);
+//     const result = await Student.findOne({email: studentInput.email});
+     
+//     if(!result){
+//         throw new Error("No Account Exists")
+//     }
+    
+//      const passwordMatch = await bcrypt.compare(studentInput.password, result.password);
+
+//     if(!passwordMatch){
+//         throw new Error("Password is Incorrect")
+//     }
+
+//     console.log("thi si result ", result)
+//     res.status(200).json({
+//       status: true,
+//       message: "Password Match, Login Successfull"
+//     });
+//   } catch (error) {
+//     console.log("this is error", error);
+//     return res.status(400).json({
+//       status: false,
+//       message: error.message,
+//     });
+//   }
+// };

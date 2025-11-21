@@ -7,7 +7,6 @@ const {
   deleteStudent,
   updateStudent,
   updateFees,
-  checkUser,
 } = require("../controllers/studentController");
 
 router.get("/", getStudent);
@@ -16,6 +15,6 @@ router.post("/",addStudent );
 router.put("/:id", updateStudent);
 router.patch("/:id/:type", updateFees)
 router.delete("/:id", deleteStudent);
-router.post("/login", checkUser)
+// router.post("/login", checkUser)
 
 module.exports = router;

@@ -13,7 +13,7 @@ import TableRow from "@mui/material/TableRow";
 import Button from "@mui/material/Button";
 import Paper from "@mui/material/Paper";
 
-export default function DetailView({ teacher,  onHandleView}) {
+export default function DetailView({ teacher, onHandleView }) {
   const [CourseDetails, setCourseDetails] = useState([]);
 
   useEffect(() => {
@@ -36,27 +36,37 @@ export default function DetailView({ teacher,  onHandleView}) {
   // console.log("this is teacherdetails", teacherDetails)
   return (
     <>
-      <Box sx={{ backgroundColor: brown[500], height: "100vh" }}>
+      <Box
+        sx={{ backgroundColor: brown[500], height: {xs:"900px",md:"90vh"}, minWidth: "380px" }}
+      >
         <Container
           sx={{
-            height: "100vh",
+            height: "45vh",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            minWidth:"355px"
           }}
         >
-          <Card sx={{ width: "45vw", height: "80vh", textAlign: "center" }}>
+          <Card
+            sx={{
+              marginTop:{xs:"40rem", sm:"21rem"},
+              width: { xs: "100%", sm: "50vw" },
+              height: {xs:"750px",sm:"80vh"},
+              textAlign: "center",
+            }}
+          >
             <CardContent>
               <Typography
                 gutterBottom
-                sx={{ color: "white", marginTop:"1rem" }}
+                sx={{ color: "white", marginTop: "1rem" }}
                 variant="h2"
               >
                 Teacher Details
               </Typography>
               <TableContainer
                 component={Paper}
-                sx={{ width: "30vw", margin: "auto", marginTop: "1rem" }}
+                sx={{ width: {sx:"90vw"}, margin: "auto", marginTop: "1rem", minWidth:"355px" }}
               >
                 <Table
                   sx={{
@@ -92,7 +102,7 @@ export default function DetailView({ teacher,  onHandleView}) {
               </TableContainer>
             </CardContent>
             <Button
-              sx={{ marginTop: 2, backgroundColor:"GrayText" }}
+              sx={{ marginTop: 2, backgroundColor: "GrayText" }}
               variant="contained"
               onClick={() => onHandleView("getTeacher")}
             >

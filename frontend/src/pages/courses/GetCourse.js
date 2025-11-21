@@ -12,6 +12,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import Snackbar from "@mui/material/Snackbar";
 
 export default function GetCourse({
   onHandleView,
@@ -19,8 +20,28 @@ export default function GetCourse({
   onGetTeacher,
   setCourse,
 }) {
+  const token = localStorage.getItem("token");
   const [courses, setCourses] = useState([]);
   const [refresh, setRefresh] = useState(true);
+
+  const [snackbar, setSnackBar] = useState({
+    open: false,
+    message: "",
+    vertical: "top",
+    horizontal: "right",
+  });
+  const handleOpen = (message) => {
+    setSnackBar({
+      open: true,
+      message,
+      vertical: "top",
+      horizontal: "right",
+    });
+  };
+
+  const handleClose = () => {
+    setSnackBar({ ...snackbar, open: false });
+  };
 
   async function handleDelete(data) {
     console.log("it is in dlete btn", data);
@@ -30,12 +51,18 @@ export default function GetCourse({
         `http://localhost:3000/api/v1/course/${courseId}`,
         {
           method: "DELETE",
+          Authorization: `Bearer ${token}`,
         }
       );
       const courseData = await res.json();
-      console.log("This is Delete Result", courseData);
-      setRefresh(false);
+      if (courseData.success) {
+        handleOpen("Deleted");
+        setRefresh(false);
+      } else {
+        throw new Error(courseData.message);
+      }
     } catch (error) {
+      handleOpen(error.message);
       console.log("Delete error", error);
     }
   }
@@ -62,7 +89,13 @@ export default function GetCourse({
   useEffect(() => {
     async function getData() {
       try {
-        const res = await fetch("http://localhost:3000/api/v1/course");
+        const res = await fetch("http://localhost:3000/api/v1/course", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
         const courseData = await res.json();
         console.log(courseData);
         setCourses(courseData.data);
@@ -71,20 +104,32 @@ export default function GetCourse({
       }
     }
     getData();
-  }, [refresh]);
+  }, [refresh, token]);
 
   return (
-    <> 
+    <>
       <Box
         sx={{
           textAlign: "center",
           color: "white",
           backgroundColor: brown[500],
           height: "100vh",
+          minWidth: "380px",
         }}
       >
-        <Box sx={{ display: "flex", justifyContent: "center", gap: 40 }}>
-          <Typography variant="h1" sx={{ paddingTop: 4 }}>
+        <Snackbar
+          anchorOrigin={{
+            vertical: snackbar.vertical,
+            horizontal: snackbar.horizontal,
+          }}
+          open={snackbar.open}
+          onClose={handleClose}
+          message={snackbar.message}
+          key={snackbar.vertical + snackbar.horizontal}
+          autoHideDuration={4000}
+        />
+        <Box sx={{ display: "flex", justifyContent: "center", gap: "2rem" }}>
+          <Typography variant="h2" sx={{ paddingTop: 6 }}>
             Courses List
           </Typography>
           <Box>
@@ -99,7 +144,7 @@ export default function GetCourse({
         </Box>
         <TableContainer
           component={Paper}
-          sx={{ maxWidth: 1000, mx: "auto", mt: 3, maxHeight: "60vh", }}
+          sx={{ maxWidth: 1000, mx: "auto", mt: 3, maxHeight: "60vh" }}
         >
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>

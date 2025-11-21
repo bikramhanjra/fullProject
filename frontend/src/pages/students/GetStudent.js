@@ -19,6 +19,7 @@ export default function GetStudent({
   onHandleUpdateStudent,
   setStudent,
 }) {
+  const token = localStorage.getItem("token");
   const [students, setStudents] = useState([]);
   const [refresh, setRefresh] = useState(false);
   const [snackbar, setSnackBar] = useState({
@@ -27,6 +28,7 @@ export default function GetStudent({
     vertical: "top",
     horizontal: "right",
   });
+
   const handleOpen = (message) => {
     setSnackBar({
       open: true,
@@ -47,6 +49,10 @@ export default function GetStudent({
         `http://localhost:3000/api/v1/student/${studentId}`,
         {
           method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       const studentData = await res.json();
@@ -80,7 +86,13 @@ export default function GetStudent({
   useEffect(() => {
     async function getData() {
       try {
-        const res = await fetch("http://localhost:3000/api/v1/student");
+        const res = await fetch("http://localhost:3000/api/v1/student", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
         const studentData = await res.json();
         console.log(studentData);
         setStudents(studentData.data);
@@ -89,7 +101,7 @@ export default function GetStudent({
       }
     }
     getData();
-  }, [refresh]);
+  }, [refresh, token]);
 
   return (
     <>
@@ -98,7 +110,9 @@ export default function GetStudent({
           textAlign: "center",
           color: "white",
           backgroundColor: brown[500],
-          height: "100vh"
+          height: "100vh",
+          minWidth: "380px",
+          minHeight: "600px",
         }}
       >
         {" "}
@@ -113,8 +127,8 @@ export default function GetStudent({
           key={snackbar.vertical + snackbar.horizontal}
           autoHideDuration={4000}
         />
-        <Box sx={{ display: "flex", justifyContent: "center"}}>
-          <Typography variant="h2" sx={{ paddingTop: 4 }}>
+        <Box sx={{ display: "flex", justifyContent: "center", gap: "2rem" }}>
+          <Typography variant="h2" sx={{ paddingTop: 6 }}>
             Students List
           </Typography>
           <Box>
@@ -128,7 +142,7 @@ export default function GetStudent({
           </Box>
         </Box>
         <TableContainer
-          component={Paper} 
+          component={Paper}
           sx={{
             maxWidth: 1000,
             mx: "auto",
@@ -167,7 +181,7 @@ export default function GetStudent({
               </TableRow>
             </TableHead>
             <TableBody>
-              {students.map((studentData) => (
+              {students?.map((studentData) => (
                 <TableRow
                   key={studentData._id}
                   sx={{ backgroundColor: brown[500] }}

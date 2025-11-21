@@ -5,6 +5,8 @@ import { brown } from "@mui/material/colors";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
+import Snackbar from "@mui/material/Snackbar";
+import { useState } from "react";
 
 export default function AddCourse({
   onHandleView,
@@ -14,33 +16,76 @@ export default function AddCourse({
   student,
   course,
 }) {
+  const token = localStorage.getItem("token");
   const handleChange = (data) => {
     handleAddEnrolledCourse(data);
   };
 
+  const [snackbar, setSnackBar] = useState({
+    open: false,
+    message: "",
+    vertical: "top",
+    horizontal: "right",
+  });
+
+  const handleOpen = (message) => {
+    setSnackBar((prev) => ({ ...prev, open: true, message: message }));
+  };
+
+  const handleClose = () => {
+    setSnackBar({ ...snackbar, open: false });
+  };
   async function onSubmit(data) {
     console.log(data);
+    const format = await checkFormat(data);
 
+    if (!format.isValid) {
+      handleOpen(format.message);
+      return;
+    }
     try {
       const res = await fetch("http://localhost:3000/api/v1/enrolled", {
         method: "POST",
         body: JSON.stringify(data),
         headers: {
           "Content-type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
       });
-      const courseData = await res.json();
-      console.log("it is enrolledCourse data", courseData);
-      alert("enrolledCourse is Added");
-      onHandleView("getEnrolledCourse")
+      const enrolledData = await res.json();
+
+      if (enrolledData.success) {
+        handleOpen("EnrolledCourse is Added");
+        setTimeout(() => {
+          onHandleView("getEnrolledCourse");
+        }, 2000);
+      } else {
+        throw new Error(enrolledData.message);
+      }
     } catch (error) {
+      handleOpen(error.message);
       console.log("Post Error is", error);
     }
+  }
+  async function checkFormat(data) {
+    if (!data.studentId) {
+      return { isValid: false, message: "Student Name is Required" };
+    }
+    if (!data.courseId) {
+      return { isValid: false, message: "Course Name is Required" };
+    }
+    return { isValid: true };
   }
 
   async function onUpdateSubmit(data) {
     const enrolledId = data._id;
     console.log(data);
+    const format = await checkFormat(data);
+
+    if (!format.isValid) {
+      handleOpen(format.message);
+      return;
+    }
 
     try {
       const res = await fetch(
@@ -50,12 +95,19 @@ export default function AddCourse({
           body: JSON.stringify(data),
           headers: {
             "Content-type": "application/json",
-          }, 
+            "Authorization": `Bearer ${token}`,
+          },
         }
       );
-      const courseData = await res.json();
-      console.log("it is enrolledCourse data", courseData);
-      alert("Updated");
+      const enrolledData = await res.json();
+      if (enrolledData.success) {
+        handleOpen("EnrolledCourse Updated");
+        setTimeout(() => {
+          onHandleView("getEnrolledCourse");
+        }, 3000);
+      } else {
+        throw new Error(enrolledData.message);
+      }
     } catch (error) {
       console.log("PATCH Error is", error);
     }
@@ -63,12 +115,34 @@ export default function AddCourse({
 
   return (
     <>
-      <Box sx={{ height: "100vh", bgcolor: brown[500] }}>
-        <Container sx={{ width: "36vw", height: "90vh", paddingTop: 10 }}>
-          <Typography variant="h2" textAlign="center" color="white">
+      <Box sx={{ height: "100vh", bgcolor: brown[500], minWidth: "380px" }}>
+        <Snackbar
+          anchorOrigin={{
+            vertical: snackbar.vertical,
+            horizontal: snackbar.horizontal,
+          }}
+          open={snackbar.open}
+          onClose={handleClose}
+          message={snackbar.message}
+          key={snackbar.vertical + snackbar.horizontal}
+          autoHideDuration={5000}
+        />
+        <Container
+          sx={{
+            width: { xs: "100vw", sm: "50vw", md: "36vw" },
+            height: "90vh",
+            paddingTop: 10,
+          }}
+        >
+          <Typography
+            variant="h2"
+            sx={{ fontSize: { xs: "2rem", md: "4rem" } }}
+            textAlign="center"
+            color="white"
+          >
             {viewButton === "addButton"
-              ? "Add enrolledCourse"
-              : "Update enrolledCourse"}
+              ? "Add EnrolledCourse"
+              : "Update EnrolledCourse"}
           </Typography>
           <Box
             component="form"
@@ -78,7 +152,7 @@ export default function AddCourse({
                 width: "25ch",
                 color: "white",
                 marginTop: 6,
-                marginLeft: "1.5rem",
+                marginLeft: { xs: "", sm: "0px", md: "1.5rem" },
               },
             }}
             noValidate
@@ -112,7 +186,7 @@ export default function AddCourse({
                 value={enrolledCourse.studentId}
                 onChange={handleChange}
               >
-             {student.map((studentData) => (
+                {student.map((studentData) => (
                   <MenuItem key={studentData._id} value={studentData._id}>
                     {studentData.name}
                   </MenuItem>
@@ -148,7 +222,7 @@ export default function AddCourse({
                 value={enrolledCourse.courseId}
                 onChange={handleChange}
               >
-                 {course.map((courseData) => (
+                {course.map((courseData) => (
                   <MenuItem key={courseData._id} value={courseData._id}>
                     {courseData.courseName}
                   </MenuItem>

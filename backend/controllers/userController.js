@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
-
+const jwt = require("jsonwebtoken");
 const addUser = async (req, res) => {
   try {
     const userInput = req.body;
-    console.log("this is userInput", userInput); 
+    console.log("this is userInput", userInput);
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(userInput.password, saltRounds);
     const result = await User.create({
@@ -24,7 +24,7 @@ const addUser = async (req, res) => {
       message: error.message,
     });
   }
-}; 
+};
 
 const checkUser = async (req, res) => {
   try {
@@ -36,15 +36,20 @@ const checkUser = async (req, res) => {
       throw new Error("No Account Exists");
     }
 
-    const passwordMatch = await bcrypt.compare(userInput.password, user.password);
+    const passwordMatch = await bcrypt.compare(
+      userInput.password,
+      user.password
+    );
 
     if (!passwordMatch) {
       throw new Error("Password is Incorrect");
     }
-
+    console.log("this is user", user)
+    const token = jwt.sign({ id: user._id }, "MySchool", { expiresIn: "2d" });
+    console.log("this is token", token)
     res.status(200).json({
       success: true,
-      data: user,
+      data: token,
     });
   } catch (error) {
     console.log("this is error", error);

@@ -12,6 +12,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import Snackbar from "@mui/material/Snackbar";
 
 export default function GetEnrolledCourse({
   onHandleView,
@@ -20,8 +21,29 @@ export default function GetEnrolledCourse({
   getStudent,
   getCourse,
 }) {
+  const token = localStorage.getItem("token");
   const [enrolledCourses, setEnrolledCourses] = useState([]);
   const [refresh, setRefresh] = useState(true);
+
+  const [snackbar, setSnackBar] = useState({
+    open: false,
+    message: "",
+    vertical: "top",
+    horizontal: "right",
+  });
+  const handleOpen = (message) => {
+    setSnackBar({
+      open: true,
+      message,
+      vertical: "top",
+      horizontal: "right",
+    });
+  };
+
+  const handleClose = () => {
+    setSnackBar({ ...snackbar, open: false });
+  };
+
 
   async function handleDelete(data) {
     console.log("it is in dlete btn", data);
@@ -31,18 +53,27 @@ export default function GetEnrolledCourse({
         `http://localhost:3000/api/v1/enrolled/${courseId}`,
         {
           method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
-      const courseData = await res.json();
-      console.log("This is Delete Result", courseData);
-      setRefresh(false);
+      const enrolledData = await res.json();
+      if(enrolledData.success){
+        handleOpen("Deleted")
+        setRefresh(false);
+      }else{
+        throw new Error(enrolledData.message)
+      }
     } catch (error) {
+      handleOpen(error.message)
       console.log("Delete error", error);
     }
   }
 
   const handleUpdate = async (data) => {
-     await getStudent();
+    await getStudent();
     await getCourse();
     onHandleUpdateEnrolledCourse(data);
     onHandleView("addEnrolledCourse", "updateButton");
@@ -61,7 +92,13 @@ export default function GetEnrolledCourse({
   useEffect(() => {
     async function getData() {
       try {
-        const res = await fetch("http://localhost:3000/api/v1/enrolled");
+        const res = await fetch("http://localhost:3000/api/v1/enrolled", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
         const courseData = await res.json();
         console.log(courseData.data);
         setEnrolledCourses(courseData.data);
@@ -70,7 +107,7 @@ export default function GetEnrolledCourse({
       }
     }
     getData();
-  }, [refresh]);
+  }, [refresh, token]);
 
   return (
     <>
@@ -80,10 +117,32 @@ export default function GetEnrolledCourse({
           color: "white",
           backgroundColor: brown[500],
           height: "100vh",
+          minWidth: "380px",
         }}
       >
-        <Box sx={{ display: "flex", justifyContent: "center", gap: 40 }}>
-          <Typography variant="h2" sx={{ paddingTop: 4 }}>
+        <Snackbar
+          anchorOrigin={{
+            vertical: snackbar.vertical,
+            horizontal: snackbar.horizontal,
+          }}
+          open={snackbar.open}
+          onClose={handleClose}
+          message={snackbar.message}
+          key={snackbar.vertical + snackbar.horizontal}
+          autoHideDuration={4000}
+        />
+        <Box sx={{ display: "flex", justifyContent: "center", gap: "2rem" }}>
+          <Typography
+            variant="h2"
+            sx={{
+              fontSize: {
+                xs: "1.5rem",
+                sm: "2.5rem",
+                md: "4rem",
+              },
+              paddingTop: { xs: 9, sm: 8, md: 6 },
+            }}
+          >
             EnrolledCourse List
           </Typography>
           <Box>
@@ -114,7 +173,7 @@ export default function GetEnrolledCourse({
                   Update
                 </TableCell>
                 <TableCell sx={{ color: "white" }} align="right">
-                  Delete 
+                  Delete
                 </TableCell>
               </TableRow>
             </TableHead>

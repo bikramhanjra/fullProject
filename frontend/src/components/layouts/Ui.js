@@ -4,7 +4,7 @@ import { Navigate } from 'react-router-dom'
 
 export default function Ui({children}) {
 
-  if(!localStorage.getItem("login")){
+  if(!localStorage.getItem("token")){
     return <Navigate to="/"/>
   }
  

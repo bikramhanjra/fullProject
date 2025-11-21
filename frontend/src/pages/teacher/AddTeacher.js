@@ -16,6 +16,7 @@ export default function AddTeacher({
   teacher,
   viewButton,
 }) {
+  const token = localStorage.getItem("token");
   const [snackbar, setSnackBar] = useState({
     open: false,
     message: "",
@@ -41,10 +42,10 @@ export default function AddTeacher({
   };
 
   async function onSubmit(data) {
-    const emailFormat = await checkFormat(data.email);
+    const emailFormat = await checkFormat(data);
 
     try {
-      if (!emailFormat.success) {
+      if (!emailFormat.isValid) {
         throw new Error(emailFormat.message);
       }
       const res = await fetch("http://localhost:3000/api/v1/teacher", {
@@ -52,6 +53,7 @@ export default function AddTeacher({
         body: JSON.stringify(data),
         headers: {
           "Content-type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
       });
       const teacherData = await res.json();
@@ -69,25 +71,26 @@ export default function AddTeacher({
     }
   }
 
-  async function checkFormat(email) {
-    if (!email) {
-      return { success: false, message: "Email is required" };
+   async function checkFormat(data) {
+    if (!data.email) {
+      return { isValid: false, message: "Email is required" };
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (!emailRegex.test(email)) {
-      return { success: false, message: "Invalid Email Address" };
+    if (!emailRegex.test(data.email)) {
+      return { isValid: false, message: "Invalid Email Format" };
     }
-
-    return { success: true };
+    if (!data.dob){
+      return {isValid : false, message: "Dob is required"}
+    }
+    return { isValid: true };
   }
 
   async function onUpdateSubmit(data) {
     const teacherId = data._id;
-    const emailFormat = await checkFormat(data.email);
+    const emailFormat = await checkFormat(data);
 
     try {
-      if (!emailFormat.success) {
+      if (!emailFormat.isValid) {
         throw new Error(emailFormat.message);
       }
       const res = await fetch(
@@ -97,6 +100,7 @@ export default function AddTeacher({
           body: JSON.stringify(data),
           headers: {
             "Content-type": "application/json",
+            "Authorization": `Bearer ${token}`,
           },
         }
       );
@@ -117,7 +121,12 @@ export default function AddTeacher({
 
   return (
     <>
-      <Box sx={{ height: "100vh", bgcolor: brown[500] }}>
+      <Box
+        sx={{
+          minWidth: "380px",
+          bgcolor: brown[500],
+        }}
+      >
         <Snackbar
           anchorOrigin={{
             vertical: snackbar.vertical,
@@ -129,7 +138,22 @@ export default function AddTeacher({
           key={snackbar.vertical + snackbar.horizontal}
           autoHideDuration={5000}
         />
-        <Container sx={{ width: "36vw", height: "90vh", paddingTop: 10 }}>
+        <Container
+          sx={{
+            width: { sx: 0, sm: "50vw", md: "65vw", lg: "60vw", xl: "36vw" },
+            height: {
+              xs: "53rem",
+              sm: "54rem",
+              md: "80vh",
+            },
+            paddingTop: {
+              xs: "1rem",
+              md: "1rem",
+              lg: "2rem",
+              xl: "5rem",
+            },
+          }}
+        >
           <Typography variant="h2" textAlign="center" color="white">
             {viewButton === "addButton" ? "Add Teacher" : "Update Teacher"}
           </Typography>
@@ -141,7 +165,7 @@ export default function AddTeacher({
                 width: "25ch",
                 color: "white",
                 marginTop: 6,
-                marginLeft: "1.5rem",
+                marginLeft: { xs: "4rem", md: "1.5rem" },
               },
             }}
             noValidate

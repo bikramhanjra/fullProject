@@ -20,6 +20,7 @@ export default function GetTeacher({
   onHandleUpdateTeacher,
   setTeacher,
 }) {
+  const token = localStorage.getItem("token");
   const [teachers, setTeachers] = useState([]);
   const [refresh, setRefresh] = useState(true);
 
@@ -51,17 +52,21 @@ export default function GetTeacher({
         `http://localhost:3000/api/v1/teacher/${teacherId}`,
         {
           method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       const teacherData = await res.json();
-      if(!teacherData.success){
-        throw new Error(teacherData.message)
+      if (!teacherData.success) {
+        throw new Error(teacherData.message);
       }
-      handleOpen("Deleted")
+      handleOpen("Deleted");
       setRefresh((prev) => !prev);
     } catch (error) {
       console.log("Delete error", error);
-      handleOpen(error.message)
+      handleOpen(error.message);
     }
   }
 
@@ -83,7 +88,13 @@ export default function GetTeacher({
   useEffect(() => {
     async function getData() {
       try {
-        const res = await fetch("http://localhost:3000/api/v1/teacher");
+        const res = await fetch("http://localhost:3000/api/v1/teacher",{
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
         const teacherData = await res.json();
         console.log(teacherData);
         setTeachers(teacherData.data);
@@ -92,7 +103,7 @@ export default function GetTeacher({
       }
     }
     getData();
-  }, [refresh]);
+  }, [refresh, token]);
 
   return (
     <>
@@ -102,6 +113,7 @@ export default function GetTeacher({
           color: "white",
           backgroundColor: brown[500],
           height: "100vh",
+          minWidth: "380px",
         }}
       >
         {" "}
@@ -116,8 +128,8 @@ export default function GetTeacher({
           key={snackbar.vertical + snackbar.horizontal}
           autoHideDuration={5000}
         />
-        <Box sx={{ display: "flex", justifyContent: "center", gap: 40 }}>
-          <Typography variant="h1" sx={{ paddingTop: 4 }}>
+        <Box sx={{ display: "flex", justifyContent: "center", gap: "2rem" }}>
+          <Typography variant="h2" sx={{ paddingTop: 6 }}>
             Teachers List
           </Typography>
           <Box>

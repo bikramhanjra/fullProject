@@ -6,7 +6,7 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import { brown } from "@mui/material/colors";
 export default function Footer() {
   return (
-    <Box sx={{textAlign:'center', bgcolor:brown[900], color:'white', p:3}}>
+    <Box sx={{textAlign:'center', bgcolor:brown[900], color:'white', p:3, minWidth:'380px',}}>
         <Box sx={{margin:2,
             "& svg" :{
                 fontSize:'60px',

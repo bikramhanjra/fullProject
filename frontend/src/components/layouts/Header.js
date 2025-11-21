@@ -18,26 +18,32 @@ import { useNavigate } from "react-router-dom";
 
 export default function Header() {
   const [moblieOpen, setMobileOpen] = useState(false);
-  const navigate = useNavigate()
-  const handleLogout  = () =>{
-    localStorage.removeItem("login")
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    localStorage.removeItem("token");
 
-    navigate("/")
-  }
+    navigate("/");
+  };
   const handleDrawerToogle = () => {
     setMobileOpen(!moblieOpen);
   };
   const drawerContent = () => (
     <Box onClick={handleDrawerToogle} sx={{ textAlign: "center", width: 250 }}>
       <Typography
-        variant="h5"
+        variant="h6"
         color="white"
-        component={"div"}
-        sx={{ flexGrow: 1, my: 2 }}
+        sx={{
+          flexGrow: 1,
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          fontSize: { xs: "1rem", sm: "1.5rem" },
+        }}
       >
-        <FastfoodIcon fontSize="large" />
+        <FastfoodIcon sx={{ fontSize: { xs: 24, sm: 32 } }} />
         My School
       </Typography>
+
       <Divider />
       <ul className="mobile-navigation">
         <li>
@@ -107,7 +113,13 @@ export default function Header() {
                   </NavLink>
                 </li>
                 <li>
-                  <Button  activeclassname="acitve" style={{marginTop:"0.5rem"}} onClick={handleLogout}>Logout</Button>
+                  <Button
+                    activeclassname="acitve"
+                    style={{ marginTop: "0.5rem" }}
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </Button>
                 </li>
               </ul>
             </Box>

@@ -12,6 +12,8 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { useState } from "react";
+import Snackbar from "@mui/material/Snackbar";
 
 export default function AddCourse({
   onHandleView,
@@ -23,9 +25,30 @@ export default function AddCourse({
   const handleChange = (data) => {
     onHandleAddCourse(data);
   };
+  const token = localStorage.getItem("token");
+  const [snackbar, setSnackBar] = useState({
+    open: false,
+    message: "",
+    vertical: "top",
+    horizontal: "right",
+  });
+
+  const handleOpen = (message) => {
+    setSnackBar((prev) => ({ ...prev, open: true, message: message }));
+  };
+
+  const handleClose = () => {
+    setSnackBar({ ...snackbar, open: false });
+  };
 
   async function onSubmit(data) {
     console.log(data);
+    const format = await checkFormat(data);
+
+    if (!format.isValid) {
+      handleOpen(format.message);
+      return;
+    }
 
     try {
       const res = await fetch("http://localhost:3000/api/v1/course", {
@@ -33,20 +56,45 @@ export default function AddCourse({
         body: JSON.stringify(data),
         headers: {
           "Content-type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
       });
       const courseData = await res.json();
       console.log("it is course data", courseData);
-      alert("Course is Added");
+      if (courseData.success) {
+        handleOpen("Course Added");
+        setTimeout(() => {
+          onHandleView("getCourse");
+        }, 2000);
+      } else {
+        throw new Error(courseData.message);
+      }
     } catch (error) {
+      handleOpen(error.message);
       console.log("Post Error is", error);
     }
   }
-
+  async function checkFormat(data) {
+    if (!data.courseName) {
+      return { isValid: false, message: "Course Name is Required" };
+    }
+    if (!data.teacherId) {
+      return { isValid: false, message: "Teacher Name is Required" };
+    }
+    if (!data.courseDuration) {
+      return { isValid: false, message: "Course Duration is Required" };
+    }
+    return { isValid: true };
+  }
   async function onUpdateSubmit(data) {
     const courseId = data._id;
     console.log(data);
+    const format = await checkFormat(data);
 
+    if (!format.isValid) {
+      handleOpen(format.message);
+      return;
+    }
     try {
       const res = await fetch(
         `http://localhost:3000/api/v1/course/${courseId}`,
@@ -55,21 +103,61 @@ export default function AddCourse({
           body: JSON.stringify(data),
           headers: {
             "Content-type": "application/json",
+            "Authorization": `Bearer ${token}`,
           },
         }
       );
       const courseData = await res.json();
       console.log("it is Course data", courseData);
-      alert("Updated");
+      if (courseData.success) {
+        handleOpen("Course Updated");
+        setTimeout(() => {
+          onHandleView("getCourse");
+        }, 2000);
+      } else {
+        throw new Error(courseData.message);
+      }
     } catch (error) {
+      handleOpen(error.message);
       console.log("PATCH Error is", error);
     }
   }
 
   return (
     <>
-      <Box sx={{ height: "100vh", bgcolor: brown[500] }}>
-        <Container sx={{ width: "36vw", height: "90vh", paddingTop: 10 }}>
+      <Box
+        sx={{
+          minWidth: "380px",
+          bgcolor: brown[500],
+        }}
+      >
+        <Snackbar
+          anchorOrigin={{
+            vertical: snackbar.vertical,
+            horizontal: snackbar.horizontal,
+          }}
+          open={snackbar.open}
+          onClose={handleClose}
+          message={snackbar.message}
+          key={snackbar.vertical + snackbar.horizontal}
+          autoHideDuration={5000}
+        />
+        <Container
+          sx={{
+            width: { sx: 0, sm: "100vw", md: "65vw", lg: "60vw", xl: "36vw" },
+            height: {
+              xs: "63rem",
+              sm: "64rem",
+              md: "90vh",
+            },
+            paddingTop: {
+              xs: "1rem",
+              md: "1rem",
+              lg: "2rem",
+              xl: "5rem",
+            },
+          }}
+        >
           <Typography variant="h2" textAlign="center" color="white">
             {viewButton === "addButton" ? "Add Course" : "Update Course"}
           </Typography>
@@ -81,7 +169,7 @@ export default function AddCourse({
                 width: "25ch",
                 color: "white",
                 marginTop: 6,
-                marginLeft: "1.5rem",
+                marginLeft: { xs: "4rem", md: "1.5rem" },
               },
             }}
             noValidate
@@ -179,7 +267,7 @@ export default function AddCourse({
                 name="teacherId"
                 value={course.teacherId}
                 onChange={handleChange}
-              > 
+              >
                 {teachers.map((teacher) => (
                   <MenuItem key={teacher._id} value={teacher._id}>
                     {teacher.name}

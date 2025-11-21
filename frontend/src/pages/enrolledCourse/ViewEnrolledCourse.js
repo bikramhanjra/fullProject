@@ -32,7 +32,6 @@ export default function ViewEnrolledCourse() {
     try {
       const res = await fetch("http://localhost:3000/api/v1/student")
       const studentData = await res.json()
-      console.log("TeacherID data", studentData.data)
       setStudent(studentData.data)
     } catch (error) {
       console.log("Error in Student Data in Courses", error);
@@ -43,7 +42,6 @@ export default function ViewEnrolledCourse() {
     try {
       const res = await fetch("http://localhost:3000/api/v1/course")
       const courseData = await res.json()
-      console.log("TeacherID data", courseData.data)
       setCourse(courseData.data)
     } catch (error) {
       console.log("Error in Course Data in Courses", error);

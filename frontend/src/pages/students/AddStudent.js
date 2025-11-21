@@ -24,6 +24,7 @@ export default function AddStudent({
   viewButton,
   student,
 }) {
+  const token = localStorage.getItem("token");
   const [showPassword, setShowPassword] = useState(false);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -48,12 +49,7 @@ export default function AddStudent({
   });
 
   const handleOpen = (message) => {
-    setSnackBar({
-      open: true,
-      message,
-      vertical: "top",
-      horizontal: "right",
-    });
+    setSnackBar((prev) => ({ ...prev, open: true, message:message }));
   };
 
   const handleClose = () => {
@@ -62,24 +58,25 @@ export default function AddStudent({
 
   async function onSubmit(data) {
     console.log(data);
-    const emailFormat = await checkFormat(data.email);
+    const emailFormat = await checkFormat(data);
 
-    if (!emailFormat.success) {
-      handleOpen("Invalid email address");
+    if (!emailFormat.isValid) {
+      handleOpen(emailFormat.message);
       return;
     }
-
+ 
     try {
       const res = await fetch("http://localhost:3000/api/v1/student", {
         method: "POST",
         body: JSON.stringify(data),
         headers: {
           "Content-type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
       });
       const studentData = await res.json();
-      console.log("it is student data", studentData);
-      if (studentData.success === true) {
+
+      if (studentData.success) {
         handleOpen("Student Added");
         setTimeout(function () {
           onHandleView("getStudent");
@@ -93,22 +90,27 @@ export default function AddStudent({
     }
   }
 
-  async function checkFormat(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return { success: false };
+  async function checkFormat(data) {
+    if (!data.email) {
+      return { isValid: false, message: "Email is required" };
     }
-
-    return { success: true };
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(data.email)) {
+      return { isValid: false, message: "Invalid Email Format" };
+    }
+    if (!data.dob){
+      return {isValid : false, message: "Dob is required"}
+    }
+    return { isValid: true };
   }
 
   async function onUpdateSubmit(data) {
     const studentId = data._id;
     console.log(data);
-    const emailFormat = await checkFormat(data.email);
+    const emailFormat = await checkFormat(data);
 
-    if (!emailFormat.success) {
-      handleOpen("Invalid email address");
+    if (!emailFormat.isValid) {
+      handleOpen(emailFormat.message);
       return;
     }
 
@@ -120,6 +122,7 @@ export default function AddStudent({
           body: JSON.stringify(data),
           headers: {
             "Content-type": "application/json",
+            "Authorization": `Bearer ${token}`,
           },
         }
       );
@@ -141,8 +144,28 @@ export default function AddStudent({
 
   return (
     <>
-      <Box sx={{ height: "100vh", bgcolor: brown[500] }}>
-        <Container sx={{ width: "36vw", height: "90vh", paddingTop: 10 }}>
+      <Box
+        sx={{
+          bgcolor: brown[500],
+          minWidth: "380px",
+        }}
+      >
+        <Container
+          sx={{
+            width: { sx: 0, sm: "50vw", md: "65vw", lg: "60vw", xl: "36vw" },
+            height: {
+              xs: "63rem",
+              sm: "64rem",
+              md: "90vh",
+            },
+            paddingTop: {
+              xs: "1rem",
+              md: "1rem",
+              lg: "2rem",
+              xl: "5rem",
+            },
+          }}
+        >
           <Snackbar
             anchorOrigin={{
               vertical: snackbar.vertical,
@@ -166,7 +189,7 @@ export default function AddStudent({
                 width: "25ch",
                 color: "white",
                 marginTop: 6,
-                marginLeft: "1.5rem",
+                marginLeft: { xs: "4rem", md: "1.5rem" },
               },
             }}
             noValidate

@@ -24,7 +24,7 @@ export default function Login() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (localStorage.getItem("login")) {
+    if (localStorage.getItem("token")) {
       navigate("/student");
     }
   });
@@ -79,14 +79,11 @@ export default function Login() {
         },
       });
       const userRes = await res.json();
-      console.log("it is user", userRes);
-      // console.log(data);
       if (userRes.success) {
-        localStorage.setItem("login", userRes.data.email);
+        localStorage.setItem("token", userRes.data);
       } else {
         throw new Error(userRes.message);
       }
-
       navigate("/student");
     } catch (err) {
       handleOpen(err.message);
