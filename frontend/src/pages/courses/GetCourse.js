@@ -44,14 +44,17 @@ export default function GetCourse({
   };
 
   async function handleDelete(data) {
-    console.log("it is in dlete btn", data);
     const courseId = data._id;
     try {
+      console.log("token", token);
       const res = await fetch(
         `http://localhost:3000/api/v1/course/${courseId}`,
         {
           method: "DELETE",
-          Authorization: `Bearer ${token}`,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       const courseData = await res.json();
@@ -177,7 +180,7 @@ export default function GetCourse({
               </TableRow>
             </TableHead>
             <TableBody>
-              {courses.map((courseData) => (
+              {courses?.map((courseData) => (
                 <TableRow
                   key={courseData._id}
                   sx={{ backgroundColor: brown[500] }}

@@ -178,7 +178,7 @@ export default function GetEnrolledCourse({
               </TableRow>
             </TableHead>
             <TableBody>
-              {enrolledCourses.map((courseData) => (
+              {enrolledCourses?.map((courseData) => (
                 <TableRow
                   key={courseData._id}
                   sx={{ backgroundColor: brown[500] }}

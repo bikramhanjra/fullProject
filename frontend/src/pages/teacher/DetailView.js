@@ -92,7 +92,7 @@ export default function DetailView({ teacher, onHandleView }) {
                     <TableRow>
                       <TableCell>
                         CourseDeatils :
-                        {CourseDetails.map((details) => (
+                        {CourseDetails?.map((details) => (
                           <span key={details._id}> * {details.courseName}</span>
                         ))}
                       </TableCell>

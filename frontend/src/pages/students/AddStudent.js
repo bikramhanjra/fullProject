@@ -49,7 +49,7 @@ export default function AddStudent({
   });
 
   const handleOpen = (message) => {
-    setSnackBar((prev) => ({ ...prev, open: true, message:message }));
+    setSnackBar((prev) => ({ ...prev, open: true, message: message }));
   };
 
   const handleClose = () => {
@@ -58,25 +58,28 @@ export default function AddStudent({
 
   async function onSubmit(data) {
     console.log(data);
-    const emailFormat = await checkFormat(data);
+    // const emailFormat = await checkFormat(data);
 
-    if (!emailFormat.isValid) {
-      handleOpen(emailFormat.message);
-      return;
-    }
- 
+    // if (!emailFormat.isValid) {
+    //   handleOpen(emailFormat.message);
+    //   return;
+    // }
+
     try {
       const res = await fetch("http://localhost:3000/api/v1/student", {
         method: "POST",
         body: JSON.stringify(data),
         headers: {
           "Content-type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       const studentData = await res.json();
-
-      if (studentData.success) {
+      if (!studentData.success && studentData.errors) {
+        const error = studentData.errors[0].msg;
+        handleOpen(error);
+        return;
+      } else if (studentData.success === true) {
         handleOpen("Student Added");
         setTimeout(function () {
           onHandleView("getStudent");
@@ -90,29 +93,29 @@ export default function AddStudent({
     }
   }
 
-  async function checkFormat(data) {
-    if (!data.email) {
-      return { isValid: false, message: "Email is required" };
-    }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(data.email)) {
-      return { isValid: false, message: "Invalid Email Format" };
-    }
-    if (!data.dob){
-      return {isValid : false, message: "Dob is required"}
-    }
-    return { isValid: true };
-  }
+  // async function checkFormat(data) {
+  //   if (!data.email) {
+  //     return { isValid: false, message: "Email is required" };
+  //   }
+  //   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  //   if (!emailRegex.test(data.email)) {
+  //     return { isValid: false, message: "Invalid Email Format" };
+  //   }
+  //   if (!data.dob) {
+  //     return { isValid: false, message: "Dob is required" };
+  //   }
+  //   return { isValid: true };
+  // }
 
   async function onUpdateSubmit(data) {
     const studentId = data._id;
     console.log(data);
-    const emailFormat = await checkFormat(data);
+    // const emailFormat = await checkFormat(data);
 
-    if (!emailFormat.isValid) {
-      handleOpen(emailFormat.message);
-      return;
-    }
+    // if (!emailFormat.isValid) {
+    //   handleOpen(emailFormat.message);
+    //   return;
+    // }
 
     try {
       const res = await fetch(
@@ -122,13 +125,17 @@ export default function AddStudent({
           body: JSON.stringify(data),
           headers: {
             "Content-type": "application/json",
-            "Authorization": `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
       const studentData = await res.json();
       console.log("it is student data", studentData);
-      if (studentData.success === true) {
+      if (!studentData.success && studentData.errors) {
+        const error = studentData.errors[0].msg;
+        handleOpen(error);
+        return;
+      } else if (studentData.success === true) {
         handleOpen("Student Updated");
         setTimeout(function () {
           onHandleView("getStudent");

@@ -5,6 +5,7 @@ import Ui from "../../components/layouts/Ui";
 
 export default function ViewCourse() {
   const [view, setView] = useState("getCourse");
+  const token = localStorage.getItem("token");
   const [viewButton, setViewButton] = useState("");
   const [course, setCourse] = useState({
     courseName: "",
@@ -19,8 +20,8 @@ export default function ViewCourse() {
   const handleView = (data, data2) => {
     console.log(data);
     setView(data);
-    setViewButton(data2)
-  }; 
+    setViewButton(data2);
+  };
 
   const handleAddCourse = (e) => {
     const { name, value } = e.target;
@@ -31,22 +32,26 @@ export default function ViewCourse() {
     setCourse(courseData);
   };
 
-  
   async function getTeacher() {
     try {
-      const res = await fetch("http://localhost:3000/api/v1/teacher")
-      const teacherData = await res.json()
-      console.log("TeacherID data", teacherData.data)
-      setTeachers(teacherData.data)
+      const res = await fetch("http://localhost:3000/api/v1/teacher", {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const teacherData = await res.json();
+      console.log("TeacherID data", teacherData.data);
+      setTeachers(teacherData.data);
     } catch (error) {
-      console.log("Error in Techer Data in Courses", error);
+      console.log("Error in Teacher Data in Courses", error);
     }
   }
 
   return (
     <Ui>
       {view === "getCourse" && (
-        <GetCourse 
+        <GetCourse
           onHandleView={handleView}
           onHandleUpdateCourse={handleUpdateCourse}
           onGetTeacher={getTeacher}

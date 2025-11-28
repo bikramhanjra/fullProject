@@ -8,12 +8,15 @@ const {
   updateStudent,
   updateFees,
 } = require("../controllers/studentController");
-
+const {
+  addValidator,
+  updateValidator,
+} = require("../middlewares/studentValidator");
 router.get("/", getStudent);
 router.get("/:id", getStudentById);
-router.post("/",addStudent );
-router.put("/:id", updateStudent);
-router.patch("/:id/:type", updateFees)
+router.post("/", addValidator, addStudent);
+router.put("/:id", updateValidator, updateStudent);
+router.patch("/:id/:type", updateFees);
 router.delete("/:id", deleteStudent);
 // router.post("/login", checkUser)
 

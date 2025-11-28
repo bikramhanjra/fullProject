@@ -43,12 +43,6 @@ export default function AddCourse({
 
   async function onSubmit(data) {
     console.log(data);
-    const format = await checkFormat(data);
-
-    if (!format.isValid) {
-      handleOpen(format.message);
-      return;
-    }
 
     try {
       const res = await fetch("http://localhost:3000/api/v1/course", {
@@ -56,12 +50,15 @@ export default function AddCourse({
         body: JSON.stringify(data),
         headers: {
           "Content-type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       const courseData = await res.json();
       console.log("it is course data", courseData);
-      if (courseData.success) {
+      if (!courseData.success && courseData.errors) {
+        const error = courseData.errors[0].msg;
+        handleOpen(error);
+      } else if (courseData.success === true) {
         handleOpen("Course Added");
         setTimeout(() => {
           onHandleView("getCourse");
@@ -74,27 +71,10 @@ export default function AddCourse({
       console.log("Post Error is", error);
     }
   }
-  async function checkFormat(data) {
-    if (!data.courseName) {
-      return { isValid: false, message: "Course Name is Required" };
-    }
-    if (!data.teacherId) {
-      return { isValid: false, message: "Teacher Name is Required" };
-    }
-    if (!data.courseDuration) {
-      return { isValid: false, message: "Course Duration is Required" };
-    }
-    return { isValid: true };
-  }
+
   async function onUpdateSubmit(data) {
     const courseId = data._id;
     console.log(data);
-    const format = await checkFormat(data);
-
-    if (!format.isValid) {
-      handleOpen(format.message);
-      return;
-    }
     try {
       const res = await fetch(
         `http://localhost:3000/api/v1/course/${courseId}`,
@@ -103,13 +83,16 @@ export default function AddCourse({
           body: JSON.stringify(data),
           headers: {
             "Content-type": "application/json",
-            "Authorization": `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
       const courseData = await res.json();
       console.log("it is Course data", courseData);
-      if (courseData.success) {
+      if (!courseData.success && courseData.errors) {
+        const error = courseData.errors[0].msg;
+        handleOpen(error);
+      } else if (courseData.success) {
         handleOpen("Course Updated");
         setTimeout(() => {
           onHandleView("getCourse");
@@ -268,7 +251,7 @@ export default function AddCourse({
                 value={course.teacherId}
                 onChange={handleChange}
               >
-                {teachers.map((teacher) => (
+                {teachers?.map((teacher) => (
                   <MenuItem key={teacher._id} value={teacher._id}>
                     {teacher.name}
                   </MenuItem>

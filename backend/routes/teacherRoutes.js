@@ -7,11 +7,15 @@ const {
   deleteTeacher,
   updateTeacher,
 } = require("../controllers/teacherController");
+const {
+  addValidator,
+  updateValidator,
+} = require("../middlewares/teacherValidator");
 
 router.get("/", getTeacher);
 router.get("/:id", getTeacherById);
-router.post("/",addTeacher );
-router.put("/:id", updateTeacher);
+router.post("/", addValidator, addTeacher);
+router.put("/:id", updateValidator, updateTeacher);
 router.delete("/:id", deleteTeacher);
 
 module.exports = router;

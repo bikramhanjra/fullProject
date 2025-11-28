@@ -2,10 +2,11 @@ const mongoose = require("mongoose");
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+
+const key = process.env.JWTSECRETS;
 const addUser = async (req, res) => {
   try {
     const userInput = req.body;
-    console.log("this is userInput", userInput);
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(userInput.password, saltRounds);
     const result = await User.create({
@@ -14,13 +15,13 @@ const addUser = async (req, res) => {
       password: hashedPassword,
     });
     res.status(200).json({
-      status: true,
+      success: true,
       data: result,
     });
   } catch (error) {
     console.log("this is error", error);
     return res.status(400).json({
-      status: false,
+      success: false,
       message: error.message,
     });
   }
@@ -29,7 +30,6 @@ const addUser = async (req, res) => {
 const checkUser = async (req, res) => {
   try {
     const userInput = req.body;
-    console.log("this is userInput", userInput);
     const user = await User.findOne({ email: userInput.email });
 
     if (!user) {
@@ -44,9 +44,8 @@ const checkUser = async (req, res) => {
     if (!passwordMatch) {
       throw new Error("Password is Incorrect");
     }
-    console.log("this is user", user)
-    const token = jwt.sign({ id: user._id }, "MySchool", { expiresIn: "2d" });
-    console.log("this is token", token)
+
+    const token = jwt.sign({ id: user._id }, key  , { expiresIn: "2d" });
     res.status(200).json({
       success: true,
       data: token,

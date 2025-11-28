@@ -37,24 +37,22 @@ export default function AddCourse({
   };
   async function onSubmit(data) {
     console.log(data);
-    const format = await checkFormat(data);
-
-    if (!format.isValid) {
-      handleOpen(format.message);
-      return;
-    }
     try {
       const res = await fetch("http://localhost:3000/api/v1/enrolled", {
         method: "POST",
         body: JSON.stringify(data),
         headers: {
           "Content-type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       const enrolledData = await res.json();
 
-      if (enrolledData.success) {
+      if (!enrolledData.success && enrolledData.errors) {
+        const error = enrolledData.errors[0].msg;
+        console.log("htis is error", error)
+        handleOpen(error);
+      } else if (enrolledData.success === true) {
         handleOpen("EnrolledCourse is Added");
         setTimeout(() => {
           onHandleView("getEnrolledCourse");
@@ -67,25 +65,9 @@ export default function AddCourse({
       console.log("Post Error is", error);
     }
   }
-  async function checkFormat(data) {
-    if (!data.studentId) {
-      return { isValid: false, message: "Student Name is Required" };
-    }
-    if (!data.courseId) {
-      return { isValid: false, message: "Course Name is Required" };
-    }
-    return { isValid: true };
-  }
 
   async function onUpdateSubmit(data) {
     const enrolledId = data._id;
-    console.log(data);
-    const format = await checkFormat(data);
-
-    if (!format.isValid) {
-      handleOpen(format.message);
-      return;
-    }
 
     try {
       const res = await fetch(
@@ -95,12 +77,15 @@ export default function AddCourse({
           body: JSON.stringify(data),
           headers: {
             "Content-type": "application/json",
-            "Authorization": `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
       const enrolledData = await res.json();
-      if (enrolledData.success) {
+      if (!enrolledCourse.success && enrolledCourse.errors) {
+        const error = enrolledCourse.errors[0].msg;
+        handleOpen(error);
+      } else if (enrolledData.success) {
         handleOpen("EnrolledCourse Updated");
         setTimeout(() => {
           onHandleView("getEnrolledCourse");
@@ -186,7 +171,7 @@ export default function AddCourse({
                 value={enrolledCourse.studentId}
                 onChange={handleChange}
               >
-                {student.map((studentData) => (
+                {student?.map((studentData) => (
                   <MenuItem key={studentData._id} value={studentData._id}>
                     {studentData.name}
                   </MenuItem>
@@ -222,7 +207,7 @@ export default function AddCourse({
                 value={enrolledCourse.courseId}
                 onChange={handleChange}
               >
-                {course.map((courseData) => (
+                {course?.map((courseData) => (
                   <MenuItem key={courseData._id} value={courseData._id}>
                     {courseData.courseName}
                   </MenuItem>

@@ -55,34 +55,34 @@ export default function SignIn() {
     setUser((prev) => ({ ...prev, [name]: value }));
   };
 
-  async function validations(user) {
-    if (!user.name) {
-      return { isValid: false, message: "name is required" };
-    }
-    if (!user.email) {
-      return { isValid: false, message: "Email is required" };
-    }
-    if (!user.password) {
-      return { isValid: false, message: "Password is required" };
-    }
+  // async function validations(user) {
+  //   if (!user.name) {
+  //     return { isValid: false, message: "name is required" };
+  //   }
+  //   if (!user.email) {
+  //     return { isValid: false, message: "Email is required" };
+  //   }
+  //   if (!user.password) {
+  //     return { isValid: false, message: "Password is required" };
+  //   }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  //   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!emailRegex.test(user.email)) {
-      return { success: false, message: "Invalid Email Format" };
-    }
+  //   if (!emailRegex.test(user.email)) {
+  //     return { success: false, message: "Invalid Email Format" };
+  //   }
 
-    return { isValid: true, message: "Requirements are fulfilled" };
-  }
+  //   return { isValid: true, message: "Requirements are fulfilled" };
+  // }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const validation = await validations(user);
-      if (!validation.isValid) {
-        throw new Error(validation.message);
-      }
+      // const validation = await validations(user);
+      // if (!validation.isValid) {
+      //   throw new Error(validation.message);
+      // }
       const res = await fetch("http://localhost:3000/api/v1/user", {
         method: "POST",
         body: JSON.stringify(user),
@@ -91,7 +91,15 @@ export default function SignIn() {
         },
       });
       const data = await res.json();
-      if (data.status) {
+      console.log("this is error data", data);
+
+      if (!data.success && data.errors) {
+        const errors = data.errors[0].msg;
+
+        console.log("this is error object", errors);
+        handleOpen(errors);
+        return;
+      } else if (data.success === true) {
         handleOpen("User Added");
         setTimeout(() => {
           navigate("/");

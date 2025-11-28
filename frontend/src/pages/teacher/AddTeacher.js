@@ -42,22 +42,21 @@ export default function AddTeacher({
   };
 
   async function onSubmit(data) {
-    const emailFormat = await checkFormat(data);
-
     try {
-      if (!emailFormat.isValid) {
-        throw new Error(emailFormat.message);
-      }
       const res = await fetch("http://localhost:3000/api/v1/teacher", {
         method: "POST",
         body: JSON.stringify(data),
         headers: {
           "Content-type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       const teacherData = await res.json();
-      if (teacherData.success === true) {
+      if (!teacherData.success && teacherData.errors) {
+        const error = teacherData.errors[0].msg;
+        handleOpen(error);
+        return;
+      } else if (teacherData.success === true) {
         handleOpen("Added");
         setTimeout(() => {
           onHandleView("getTeacher");
@@ -71,28 +70,10 @@ export default function AddTeacher({
     }
   }
 
-   async function checkFormat(data) {
-    if (!data.email) {
-      return { isValid: false, message: "Email is required" };
-    }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(data.email)) {
-      return { isValid: false, message: "Invalid Email Format" };
-    }
-    if (!data.dob){
-      return {isValid : false, message: "Dob is required"}
-    }
-    return { isValid: true };
-  }
-
   async function onUpdateSubmit(data) {
     const teacherId = data._id;
-    const emailFormat = await checkFormat(data);
 
     try {
-      if (!emailFormat.isValid) {
-        throw new Error(emailFormat.message);
-      }
       const res = await fetch(
         `http://localhost:3000/api/v1/teacher/${teacherId}`,
         {
@@ -100,12 +81,16 @@ export default function AddTeacher({
           body: JSON.stringify(data),
           headers: {
             "Content-type": "application/json",
-            "Authorization": `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
       const teacherData = await res.json();
-      if (teacherData.success === true) {
+      if (!teacherData.success && teacherData.errors) {
+        const error = teacherData.errors[0].msg;
+        handleOpen(error);
+        return;
+      } else if (teacherData.success === true) {
         handleOpen("Updated");
         setTimeout(() => {
           onHandleView("getTeacher");

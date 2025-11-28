@@ -91,7 +91,7 @@ export default function GetStudent({
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
-          },
+          }, 
         });
         const studentData = await res.json();
         console.log(studentData);

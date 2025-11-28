@@ -174,7 +174,7 @@ export default function GetTeacher({
               </TableRow>
             </TableHead>
             <TableBody>
-              {teachers.map((teacherData) => (
+              {teachers?.map((teacherData) => (
                 <TableRow
                   key={teacherData._id}
                   sx={{ backgroundColor: brown[500] }}

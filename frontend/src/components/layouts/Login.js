@@ -53,24 +53,24 @@ export default function Login() {
     const { name, value } = user.target;
     setUser((prev) => ({ ...prev, [name]: value }));
   };
-  async function validations() {
-    if (!user.email) {
-      return { isValid: false, message: "Email is required" };
-    }
-    if (!user.password) {
-      return { isValid: false, message: "Password is required" };
-    }
+  // async function validations() {
+  //   if (!user.email) {
+  //     return { isValid: false, message: "Email is required" };
+  //   }
+  //   if (!user.password) {
+  //     return { isValid: false, message: "Password is required" };
+  //   }
 
-    return { isValid: true, message: "Requirements are fulfilled" };
-  }
+  //   return { isValid: true, message: "Requirements are fulfilled" };
+  // }
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const validation = await validations(user);
+      // const validation = await validations(user);
 
-      if (!validation.isValid) {
-        throw new Error(validation.message);
-      }
+      // if (!validation.isValid) {
+      //   throw new Error(validation.message);
+      // }
       const res = await fetch("http://localhost:3000/api/v1/user/login", {
         method: "POST",
         body: JSON.stringify(user),
@@ -79,7 +79,13 @@ export default function Login() {
         },
       });
       const userRes = await res.json();
-      if (userRes.success) {
+
+      if (!userRes.success && userRes.errors) {
+        const errors = userRes.errors[0].msg;
+        console.log("this is error object", errors);
+        handleOpen(errors);
+        return;
+      } else if (userRes.success === true) {
         localStorage.setItem("token", userRes.data);
       } else {
         throw new Error(userRes.message);

@@ -5,13 +5,14 @@ import Ui from "../../components/layouts/Ui";
 
 export default function ViewEnrolledCourse() {
   const [view, setView] = useState("getEnrolledCourse");
+  const token = localStorage.getItem("token");
   const [viewButton, setViewButton] = useState("");
   const [enrolledCourse, setEnrolledCourse] = useState({
     studentId: "",
     courseId: "",
   });
   const [student, setStudent] = useState([]);
-    const [course, setCourse] = useState([]);
+  const [course, setCourse] = useState([]);
   const handleView = (data, data2) => {
     console.log(data);
     setView(data);
@@ -24,15 +25,20 @@ export default function ViewEnrolledCourse() {
   };
 
   const handleUpdateEnrolledCourse = (enrolledData) => {
-    console.log("enrolled data", enrolledData)
+    console.log("enrolled data", enrolledData);
     setEnrolledCourse(enrolledData);
   };
 
   async function getStudent() {
     try {
-      const res = await fetch("http://localhost:3000/api/v1/student")
-      const studentData = await res.json()
-      setStudent(studentData.data)
+      const res = await fetch("http://localhost:3000/api/v1/student", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const studentData = await res.json();
+      setStudent(studentData.data);
     } catch (error) {
       console.log("Error in Student Data in Courses", error);
     }
@@ -40,9 +46,14 @@ export default function ViewEnrolledCourse() {
 
   async function getCourse() {
     try {
-      const res = await fetch("http://localhost:3000/api/v1/course")
-      const courseData = await res.json()
-      setCourse(courseData.data)
+      const res = await fetch("http://localhost:3000/api/v1/course", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const courseData = await res.json();
+      setCourse(courseData.data);
     } catch (error) {
       console.log("Error in Course Data in Courses", error);
     }
